@@ -36,7 +36,7 @@ struct Material {
 }material;
 
 int main() {
-	GLFWwindow* window = initWindow("Assignment 0", screenWidth, screenHeight);
+	GLFWwindow* window = initWindow("GPR-450 Final", screenWidth, screenHeight);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 	glEnable(GL_CULL_FACE);
