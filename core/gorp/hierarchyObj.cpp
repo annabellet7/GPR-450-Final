@@ -1,6 +1,6 @@
 #include "hierarchyObj.h"
 
-void HierachyObj::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
+void HierarchyObj::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
 {
 	local = glm::mat4(1.0f);
 	local = glm::translate(local, pos);
@@ -8,31 +8,41 @@ void HierachyObj::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, 
 	local = glm::scale(local, scale);
 }
 
-void HierachyObj::setLocalBasedOnGlobal()
+void HierarchyObj::setLocalInverse()
 {
-	HierachyObj* cur;
-	std::stack<HierachyObj*> transformStack;
-	
-	tranformLocal = parent->tranformGlobalInv * tranformGlobal;
+	transformLocalInv = glm::inverse(transformLocal);
 }
 
-void HierachyObj::setHierarchyBasedOnLocal()
+void HierarchyObj::setGlobalInverse()
 {
-	HierachyObj* cur;
+	transformGlobalInv = glm::inverse(transformGlobal);
+}
+
+void HierarchyObj::setLocalBasedOnGlobal()
+{
+	HierarchyObj* cur;
+	std::stack<HierarchyObj*> transformStack;
+	
+	transformLocal = parent->transformGlobalInv * transformGlobal;
+}
+
+void HierarchyObj::setHierarchyBasedOnLocal()
+{
+	HierarchyObj* cur;
 	for (cur = this; cur->parent != nullptr; cur = cur->parent);
 
-	std::stack<HierachyObj*> transformStack;
+	std::stack<HierarchyObj*> transformStack;
 	transformStack.push(cur);
 	while (!transformStack.empty())
 	{
 		cur = transformStack.top();
 		transformStack.pop();
 
-		for (HierachyObj* child : cur->children)
+		for (HierarchyObj* child : cur->children)
 		{
 			transformStack.push(child);
 		}
 
-		cur->tranformGlobal = cur->parent->tranformGlobal * cur->tranformLocal;
+		cur->transformGlobal = cur->parent->transformGlobal * cur->transformLocal;
 	}
 }

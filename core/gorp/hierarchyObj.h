@@ -6,18 +6,20 @@
 #include <vector>
 #include <stack>
 
-class HierachyObj
+class HierarchyObj
 {
 public:
 	std::string name;
-	HierachyObj* parent;
-	std::vector <HierachyObj*> children;
-	glm::mat4 tranformLocal;
-	glm::mat4 tranformGlobal;
-	glm::mat4 tranformLocalInv;
-	glm::mat4 tranformGlobalInv;
+	HierarchyObj* parent;
+	std::vector <HierarchyObj*> children;
+	glm::mat4 transformLocal;
+	glm::mat4 transformGlobal;
+	glm::mat4 transformLocalInv;
+	glm::mat4 transformGlobalInv;
 
 	void setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale);
-	void setLocalBasedOnHierachy();
+	void setLocalInverse();
+	void setGlobalInverse();
+	void setLocalBasedOnGlobal();
 	void setHierarchyBasedOnLocal();
 };
