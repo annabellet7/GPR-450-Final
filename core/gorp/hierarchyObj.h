@@ -5,21 +5,24 @@
 #include <string>
 #include <vector>
 #include <stack>
-
-class HierarchyObj
+namespace gorp
 {
-public:
-	std::string name;
-	HierarchyObj* parent;
-	std::vector <HierarchyObj*> children;
-	glm::mat4 transformLocal;
-	glm::mat4 transformGlobal;
-	glm::mat4 transformLocalInv;
-	glm::mat4 transformGlobalInv;
+	class HierarchyObj
+	{
+	public:
+		std::string name;
+		HierarchyObj* parent;
+		std::vector <HierarchyObj*> children;
+		glm::mat4 transformLocal;
+		glm::mat4 transformGlobal;
+		glm::mat4 transformLocalInv;
+		glm::mat4 transformGlobalInv;
 
-	void setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale);
-	void setLocalInverse();
-	void setGlobalInverse();
-	void setLocalBasedOnGlobal();
-	void setHierarchyBasedOnLocal();
-};
+		void setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale);
+		void setLocalInverse();
+		void setGlobalInverse();
+		void setLocalBasedOnGlobal();
+		void setHierarchyBasedOnLocal();
+		HierarchyObj* GetObj(std::string nodeName);
+	};
+}
