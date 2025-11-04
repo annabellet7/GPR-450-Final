@@ -9,7 +9,6 @@ struct clipCtrl
 	float clipTime, keyframeTime;
 	float clipParam, keyframeParam;
 
-	ClipPool const* clipPool;
 	Clip const* clip;
 	Keyframe const* keyframe;
 };

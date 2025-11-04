@@ -4,6 +4,7 @@
 
 struct Keyframe
 {
+	int index;
 	float duration;
 };
 
@@ -36,7 +37,7 @@ int clipPoolRelease(ClipPool* clipPool);
 
 int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag, Clip const* clip);
 
-int clipInit(Clip* clip, std::string const name, Keyframe const* keyframeFirst, Keyframe const* keyframeLast);
+int clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes);
 
 int a3clipGetIndexInPool(ClipPool const* clipPool, std::string name);
 
