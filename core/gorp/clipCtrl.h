@@ -13,3 +13,4 @@ struct clipCtrl
 	Keyframe const* keyframe;
 };
 
+int clipCtrlInit(clipCtrl* ctrl, std::string name, Clip* currentClip);

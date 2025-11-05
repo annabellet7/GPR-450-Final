@@ -3,57 +3,48 @@
 int keyframeInit(Keyframe* keyframe, int index, float duration)
 {
 	if(!keyframe)
-		return -1;
+		keyframe = new Keyframe;
 
 	keyframe->index = index;
 	keyframe->duration = duration; //1/framerate
 	return keyframe->index;
 }
 
-//int clipPoolCreate(ClipPool* clipPool, int const clipCount, int const keyframeCount)
-//{
-//	if (!clipPool && clipPool->clip && !clipCount && !keyframeCount)
-//		return -1;
-//	
-//	if(!clipPool->clip)
-//		clipPool->clip = new Clip;
-//
-//
-//
-//
-//	return 0;
-//}
-
-//int clipPoolRelease(ClipPool* clipPool)
-//{
-//	return 0;
-//}
+void deleteKeyframe(Keyframe* keyframe)
+{
+	delete keyframe;
+}
 
 int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag, Clip const* clip)
 {
-	if (transition && clip)
+	if (!transition)
 	{
-		transition->flag = flag;
-		return flag;
+		transition = new ClipTransition;
 	}
-	return 0;
+	transition->flag = flag;
+	return flag;
 }
 
 int clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes)
 {
+	if (!clip)
+	{
+		clip = new Clip;
+	}
 	clip->name = name;
 	clip->keyframes = keyframes;
-
-
-	return 0;
 }
 
-//int a3clipGetIndexInPool(ClipPool const* clipPool, std::string name)
-//{
-//	return 0;
-//}
+void deleteClip(Clip* clip)
+{
+	for (int i = 0; i < clip->keyframes.size(); i++)
+	{
+		deleteKeyframe(clip->keyframes[i]);
+	}
+	delete clip;
+}
 
-//int a3clipCalculateDuration(ClipPool const* clipPool, int const clipIndex, int const fps)
-//{
-//	return 0;
-//}
+int addKeyframeToClip(Clip* clip, Keyframe* keyframe)
+{
+	clip->keyframes.push_back(keyframe);
+}
