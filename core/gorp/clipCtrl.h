@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "keyframe.h"
+#include "hierarchyObj.h"
 
 struct clipCtrl
 {
@@ -9,8 +11,9 @@ struct clipCtrl
 	float clipTime, keyframeTime;
 	float clipParam, keyframeParam;
 
+	std::vector<Clip const*> clips;
 	Clip const* clip;
 	Keyframe const* keyframe;
 };
 
-int clipCtrlInit(clipCtrl* ctrl, std::string name, Clip* currentClip);
+int clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips);
