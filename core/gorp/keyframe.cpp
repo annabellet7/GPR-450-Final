@@ -12,7 +12,8 @@ int keyframeInit(Keyframe* keyframe, int index, float duration)
 
 void deleteKeyframe(Keyframe* keyframe)
 {
-	delete keyframe;
+	if(keyframe)
+		delete keyframe;
 }
 
 int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag, Clip const* clip)
@@ -37,11 +38,14 @@ int clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyfram
 
 void deleteClip(Clip* clip)
 {
-	for (int i = 0; i < clip->keyframes.size(); i++)
+	if (clip)
 	{
-		deleteKeyframe(clip->keyframes[i]);
+		for (int i = 0; i < clip->keyframes.size(); i++)
+		{
+			deleteKeyframe(clip->keyframes[i]);
+		}
+		delete clip;
 	}
-	delete clip;
 }
 
 int addKeyframeToClip(Clip* clip, Keyframe* keyframe)

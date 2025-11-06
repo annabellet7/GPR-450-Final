@@ -2,12 +2,29 @@
 #include "hierarchyObj.h"
 #include <fstream>
 #include <stdio.h>
+#include <string>
 #include <iostream>
 
 namespace gorp
 {
+	struct HeaderData
+	{
+		std::string fileType;
+		std::string dataType;
+		std::string fileVersion;
+		int boneCount;
+		int numFrames;
+		float frameRate;
+		std::string eulerRotationOrder;
+		std::string calibrationUnits;
+		bool isDegrees = true;
+		char globalAxisofGravity = 'y';
+		char boneLengthAxis = 'y';
+		float scaleFactor = 1.0f;
+	};
+
 	//Enums and strings thanks to Dan Buckstein animal3D framework
-	enum fileSectionHTR : int
+	enum fileSectionHTR
 	{
 		htr_file,
 		htr_header,
@@ -42,7 +59,7 @@ namespace gorp
 		"BoneLengthAxis",
 		"ScaleFactor",
 	};
-	enum fileHeaderComponentHTR : int
+	enum fileHeaderComponentHTR
 	{
 		htr_FileType,
 		htr_DataType,
@@ -58,5 +75,5 @@ namespace gorp
 		htr_ScaleFactor,
 	};
 
-	void HTRLoader(HierarchyObj* root, const std::string resourceFilePath);
+	void HTRLoader(std::vector<std::vector<HierarchyObj*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath);
 }

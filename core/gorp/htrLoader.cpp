@@ -3,16 +3,17 @@
 
 namespace gorp
 {
-	void HTRLoader(HierarchyObj* root, const std::string resourceFilePath)
+	void HTRLoader(std::vector<std::vector<HierarchyObj*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath)
 	{
 		std::ifstream fin(resourceFilePath);
 		fileSectionHTR currentSection = htr_file;
 		std::string buffer[2];
+		std::string currentNode;
 
 		while (!fin.eof())
 		{
 			std::string line;
-			std::getline(fin, line);//sscanf
+			std::getline(fin, line);
 
 			//Change of section
 			if (line.at(0) == '[')
@@ -30,6 +31,7 @@ namespace gorp
 				{
 					//read for frame pose
 					//currentSection = htr_nodepose
+
 				}
 			}
 			
@@ -40,25 +42,34 @@ namespace gorp
 				case htr_header:
 					sscanf(line.c_str(), "%s %s", buffer[0], buffer[1]);
 
-					if (buffer[0].compare(headerComponents[htr_FileType]));
-					else if (buffer[0].compare(headerComponents[htr_DataType]));
-					else if (buffer[0].compare(headerComponents[htr_FileVersion]));
-
+					if (buffer[0].compare(headerComponents[htr_FileType]))
+					{
+						headerData.fileType = buffer[1];
+					}
+					else if (buffer[0].compare(headerComponents[htr_DataType]))
+					{
+						headerData.dataType = buffer[1];
+					}
+					else if (buffer[0].compare(headerComponents[htr_FileVersion]))
+					{
+						headerData.fileVersion = buffer[1];
+					}
 					else if (buffer[0].compare(headerComponents[htr_NumSegments]))
 					{
-						//atoi(buffer[1].c_str());
+						headerData.boneCount = std::stoi(buffer[1]);
 					}
 					else if (buffer[0].compare(headerComponents[htr_NumFrames]))
 					{
-						//atoi(buffer[1].c_str());
+						headerData.numFrames = std::stoi(buffer[1]);
 					}
 					else if (buffer[0].compare(headerComponents[htr_DataFrameRate]))
 					{
-						//fps = atoi(buffer[1].c_str());
-						//seconds per sample = 1/
+						headerData.frameRate = std::stof(buffer[1]);
 					}
 					else if (buffer[0].compare(headerComponents[htr_EulerRotationOrder]))
 					{
+						headerData.eulerRotationOrder = buffer[1];
+
 						//dumbass turnary operators cuz theyre fun
 						/*eulerorder =
 							tolower(buffer[1][0]) == 'x' ?
@@ -68,16 +79,36 @@ namespace gorp
 								(tolower(buffer[1][1]) == 'x' ? zxy : zyx);
 						*/
 					}
-					else if (buffer[0].compare(headerComponents[htr_CalibrationUnits]));//will be degrees
+					else if (buffer[0].compare(headerComponents[htr_CalibrationUnits]))
+					{
+						headerData.calibrationUnits = buffer[1];
+					}
 					else if (buffer[0].compare(headerComponents[htr_RotationUnits]))
 					{
-
+						headerData.isDegrees = buffer[1].at(0) == 'd';
 					}
-
-					else if (buffer[0].compare(headerComponents[htr_GlobalAxisofGravity]));
-					else if (buffer[0].compare(headerComponents[htr_BoneLengthAxis]));
-
-					else if (buffer[0].compare(headerComponents[htr_ScaleFactor]));//will be one
+					else if (buffer[0].compare(headerComponents[htr_GlobalAxisofGravity]))
+					{
+						headerData.globalAxisofGravity = buffer[1].at(0);
+					}
+					else if (buffer[0].compare(headerComponents[htr_BoneLengthAxis]))
+					{
+						headerData.boneLengthAxis = buffer[1].at(0);
+					}
+					else if (buffer[0].compare(headerComponents[htr_ScaleFactor]))
+					{
+						headerData.scaleFactor = std::stof(buffer[1]);
+					}
+					break;
+				case htr_basepose:
+					char* name;
+					float Tx, Ty, Tz, Rx, Ry, Rz, BoneLength;
+					sscanf(line.c_str(), "%s %f %f %f %f %f %f %f", name, Tx, Ty, Tz, Rx, Ry, Rz, BoneLength);
+					break;
+				case htr_nodepose:
+					int index;
+					float Tx, Ty, Tz, Rx, Ry, Rz, scale;
+					sscanf(line.c_str(), "%d %f %f %f %f %f %f %f", index, Tx, Ty, Tz, Rx, Ry, Rz, scale);
 					break;
 				}
 			}
