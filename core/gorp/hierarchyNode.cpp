@@ -1,8 +1,8 @@
-#include "hierarchyObj.h"
+#include "hierarchyNode.h"
 
 namespace gorp
 {
-	void HierarchyObj::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
+	void HierarchyNode::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
 	{
 		local = glm::mat4(1.0f);
 		local = glm::translate(local, pos);
@@ -10,27 +10,27 @@ namespace gorp
 		local = glm::scale(local, scale);
 	}
 
-	void HierarchyObj::setLocalInverse()
+	void HierarchyNode::setLocalInverse()
 	{
 		transformLocalInv = glm::inverse(transformLocal);
 	}
 
-	void HierarchyObj::setGlobalInverse()
+	void HierarchyNode::setGlobalInverse()
 	{
 		transformGlobalInv = glm::inverse(transformGlobal);
 	}
 
-	void HierarchyObj::setLocalBasedOnGlobal()
+	void HierarchyNode::setLocalBasedOnGlobal()
 	{
 		transformLocal = parent->transformGlobalInv * transformGlobal;
 	}
 
-	void HierarchyObj::setHierarchyBasedOnLocal()
+	void HierarchyNode::setHierarchyBasedOnLocal()
 	{
-		HierarchyObj* cur;
+		HierarchyNode* cur;
 		for (cur = this; cur->parent != nullptr; cur = cur->parent);
 
-		std::stack<HierarchyObj*> transformStack;
+		std::stack<HierarchyNode*> transformStack;
 		transformStack.push(cur);
 
 		while (!transformStack.empty())
@@ -38,7 +38,7 @@ namespace gorp
 			cur = transformStack.top();
 			transformStack.pop();
 
-			for (HierarchyObj* child : cur->children)
+			for (HierarchyNode* child : cur->children)
 			{
 				transformStack.push(child);
 			}
@@ -47,13 +47,13 @@ namespace gorp
 		}
 	}
 
-	HierarchyObj* HierarchyObj::GetObj(std::string nodeName)
+	HierarchyNode* HierarchyNode::GetNode(std::string nodeName)
 	{
-		HierarchyObj* cur;
+		HierarchyNode* cur;
 
 		for (cur = this; cur->parent != nullptr; cur = cur->parent);
 
-		std::stack<HierarchyObj*> transformStack;
+		std::stack<HierarchyNode*> transformStack;
 		transformStack.push(cur);
 
 		while (!transformStack.empty())
@@ -61,7 +61,7 @@ namespace gorp
 			cur = transformStack.top();
 			transformStack.pop();
 
-			for (HierarchyObj* child : cur->children)
+			for (HierarchyNode* child : cur->children)
 			{
 				transformStack.push(child);
 			}

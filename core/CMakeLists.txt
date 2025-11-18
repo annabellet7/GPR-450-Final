@@ -15,7 +15,7 @@ set(CORE_INC_DIR
  CACHE PATH "CORE INCLUDE SOURCE PATH"
 )
 
-add_library(core STATIC ${CORE_SRC} ${CORE_INC} "gorp/hierarchyObj.h" "gorp/hierarchyObj.cpp"   "gorp/htrLoader.h" "gorp/htrLoader.cpp"    "gorp/clipCtrl.h" "gorp/clipCtrl.cpp" "gorp/keyframe.cpp" "gorp/keyframe.h")
+add_library(core STATIC ${CORE_SRC} ${CORE_INC} "gorp/hierarchyNode.h" "gorp/hierarchyNode.cpp"   "gorp/htrLoader.h" "gorp/htrLoader.cpp"    "gorp/clipCtrl.h" "gorp/clipCtrl.cpp" "gorp/keyframe.cpp" "gorp/keyframe.h" "gorp/Hierarchy.h" "gorp/Hierarchy.cpp" "gorp/Transform.h" "gorp/Transform.cpp")
 
 find_package(OpenGL REQUIRED)
 

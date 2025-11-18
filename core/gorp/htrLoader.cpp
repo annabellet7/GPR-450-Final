@@ -3,7 +3,7 @@
 
 namespace gorp
 {
-	void HTRLoader(std::vector<std::vector<HierarchyObj*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath)
+	void HTRLoader(std::vector<std::vector<HierarchyNode*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath)
 	{
 		std::ifstream fin(resourceFilePath);
 		fileSectionHTR currentSection = htr_file;
@@ -31,7 +31,6 @@ namespace gorp
 				{
 					//read for frame pose
 					//currentSection = htr_nodepose
-
 				}
 			}
 			
@@ -109,6 +108,7 @@ namespace gorp
 					int index;
 					float Tx, Ty, Tz, Rx, Ry, Rz, scale;
 					sscanf(line.c_str(), "%d %f %f %f %f %f %f %f", index, Tx, Ty, Tz, Rx, Ry, Rz, scale);
+					//if bone has already been seen 
 					break;
 				}
 			}

@@ -2,17 +2,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <string>
-#include <vector>
-#include <stack>
+
 namespace gorp
 {
-	class HierarchyObj
+	class Transform
 	{
 	public:
-		std::string name;
-		HierarchyObj* parent;
-		std::vector <HierarchyObj*> children;
 		glm::mat4 transformLocal;
 		glm::mat4 transformGlobal;
 		glm::mat4 transformLocalInv;
@@ -23,6 +18,5 @@ namespace gorp
 		void setGlobalInverse();
 		void setLocalBasedOnGlobal();
 		void setHierarchyBasedOnLocal();
-		HierarchyObj* GetObj(std::string nodeName);
 	};
 }

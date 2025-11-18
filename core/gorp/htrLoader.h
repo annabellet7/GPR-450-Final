@@ -1,5 +1,5 @@
 #pragma once
-#include "hierarchyObj.h"
+#include "hierarchyNode.h"
 #include <fstream>
 #include <stdio.h>
 #include <string>
@@ -75,5 +75,5 @@ namespace gorp
 		htr_ScaleFactor,
 	};
 
-	void HTRLoader(std::vector<std::vector<HierarchyObj*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath);
+	void HTRLoader(std::vector<std::vector<HierarchyNode*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath);
 }
