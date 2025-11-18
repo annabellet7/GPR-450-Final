@@ -8,6 +8,7 @@ namespace gorp
 		local = glm::translate(local, pos);
 		local *= glm::mat4_cast(rotation);
 		local = glm::scale(local, scale);
+		setGlobalInverse();
 	}
 
 	void Transform::setLocalInverse()

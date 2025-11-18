@@ -2,30 +2,7 @@
 
 namespace gorp
 {
-	void HierarchyNode::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
-	{
-		local = glm::mat4(1.0f);
-		local = glm::translate(local, pos);
-		local *= glm::mat4_cast(rotation);
-		local = glm::scale(local, scale);
-	}
-
-	void HierarchyNode::setLocalInverse()
-	{
-		transformLocalInv = glm::inverse(transformLocal);
-	}
-
-	void HierarchyNode::setGlobalInverse()
-	{
-		transformGlobalInv = glm::inverse(transformGlobal);
-	}
-
-	void HierarchyNode::setLocalBasedOnGlobal()
-	{
-		transformLocal = parent->transformGlobalInv * transformGlobal;
-	}
-
-	void HierarchyNode::setHierarchyBasedOnLocal()
+	void HierarchyNode::setHierarchyPosBasedOnLocal()
 	{
 		HierarchyNode* cur;
 		for (cur = this; cur->parent != nullptr; cur = cur->parent);
@@ -43,7 +20,7 @@ namespace gorp
 				transformStack.push(child);
 			}
 
-			cur->transformGlobal = cur->parent->transformGlobal * cur->transformLocal;
+			cur->m.transformGlobal = cur->parent->m.transformGlobal * cur->m.transformLocal;
 		}
 	}
 

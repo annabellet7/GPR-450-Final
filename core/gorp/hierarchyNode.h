@@ -15,11 +15,7 @@ namespace gorp
 		std::vector <HierarchyNode*> children;
 		Transform m;
 
-		void setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale);
-		void setLocalInverse();
-		void setGlobalInverse();
-		void setLocalBasedOnGlobal();
-		void setHierarchyBasedOnLocal();
+		void setHierarchyPosBasedOnLocal();
 		HierarchyNode* GetNode(std::string nodeName);
 	};
 }
