@@ -6,6 +6,11 @@ namespace gorp
 {
 	class Hierarchy
 	{
-		HierarchyNode* node;
+	public:
+		HierarchyNode* mNode;
+		int mSize;
+
+		Hierarchy(Hierarchy* hierarchy, int size);
+		/*addNode(Hierarchy* hierarchy, )*/
 	};
 }

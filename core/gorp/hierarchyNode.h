@@ -15,6 +15,8 @@ namespace gorp
 		std::vector <HierarchyNode*> children;
 		Transform m;
 
+		HierarchyNode();
+		HierarchyNode(std::string nodeName, HierarchyNode* nodeParent, std::vector <HierarchyNode*> nodeChildren, Transform nodeTransform);
 		void setHierarchyPosBasedOnLocal();
 		HierarchyNode* GetNode(std::string nodeName);
 	};
