@@ -26,7 +26,7 @@ int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag
 	return flag;
 }
 
-int clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes)
+void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes)
 {
 	if (!clip)
 	{
@@ -48,7 +48,7 @@ void deleteClip(Clip* clip)
 	}
 }
 
-int addKeyframeToClip(Clip* clip, Keyframe* keyframe)
+void addKeyframeToClip(Clip* clip, Keyframe* keyframe)
 {
 	clip->keyframes.push_back(keyframe);
-}
+ }

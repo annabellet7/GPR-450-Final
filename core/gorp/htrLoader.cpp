@@ -10,6 +10,8 @@ namespace gorp
 		std::string buffer[2];
 		std::string currentNode;
 
+		float Tx, Ty, Tz, Rx, Ry, Rz;
+
 		while (!fin.eof())
 		{
 			std::string line;
@@ -102,12 +104,12 @@ namespace gorp
 					break;
 				case htr_basepose:
 					char* name;
-					float Tx, Ty, Tz, Rx, Ry, Rz, BoneLength;
+					float BoneLength;
 					sscanf(line.c_str(), "%s %f %f %f %f %f %f %f", name, Tx, Ty, Tz, Rx, Ry, Rz, BoneLength);
 					break;
 				case htr_nodepose:
 					int index;
-					float Tx, Ty, Tz, Rx, Ry, Rz, scale;
+					float scale;
 					sscanf(line.c_str(), "%d %f %f %f %f %f %f %f", index, Tx, Ty, Tz, Rx, Ry, Rz, scale);
 					break;
 				}
