@@ -1,10 +1,23 @@
 #include "clipCtrl.h"
 
-void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips)
+//ClipCtrl::ClipCtrl()
+//{
+//	name = "";
+//	clipIndex = 0;
+//	keyframeIndex = 0;
+//	clipTime = 0.0;
+//	keyframeTime = 0.0;
+//	clipParam = 0.0;
+//	keyframeParam = 0.0;
+//	clip = nullptr;
+//	keyframe = nullptr;
+//}
+
+void clipCtrlInit(ClipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips)
 {
 	if (!ctrl)
 	{
-		ctrl = new clipCtrl;
+		ctrl = new ClipCtrl;
 	}
 
 	ctrl->name = name;
@@ -22,7 +35,7 @@ void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<C
 	ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[0];
 }
 
-int a3clipControllerUpdate(clipCtrl* ctrl, float dt)
+int a3clipControllerUpdate(ClipCtrl* ctrl, float dt)
 {
 	if (ctrl /*&& clipCtrl->clipPool*/)
 	{
