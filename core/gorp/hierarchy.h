@@ -11,6 +11,7 @@
 
 		//Hierarchy(Hierarchy* hierarchy, int size);
 		int getNode(std::string name);
+		int getNode(int index);
 		void addNode(HierarchyNode node);
 		/*addNode(Hierarchy* hierarchy, )*/
 	};

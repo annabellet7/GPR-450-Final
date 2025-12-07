@@ -17,6 +17,11 @@
 		return -1;
 	}
 
+	int Hierarchy::getNode(int index)
+	{
+		return -1;
+	}
+
 	void Hierarchy::addNode(HierarchyNode node)
 	{
 		nodeList.push_back(node);
