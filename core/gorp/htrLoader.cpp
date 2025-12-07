@@ -10,6 +10,7 @@ namespace gorp
 		std::string buffer[2];
 		std::string currentNode;
 
+		int index;
 		float Tx, Ty, Tz, Rx, Ry, Rz;
 
 		while (!fin.eof())
@@ -42,7 +43,9 @@ namespace gorp
 				switch (currentSection)
 				{
 				case htr_header:
-					sscanf(line.c_str(), "%s %s", buffer[0], buffer[1]);
+				{
+					std::stringstream ss(line);
+					ss >> buffer[0] >> buffer[1];
 
 					if (buffer[0].compare(headerComponents[htr_FileType]))
 					{
@@ -102,16 +105,37 @@ namespace gorp
 						headerData.scaleFactor = std::stof(buffer[1]);
 					}
 					break;
+				}
 				case htr_basepose:
-					char* name;
+				{
+					std::string name;
 					float BoneLength;
-					sscanf(line.c_str(), "%s %f %f %f %f %f %f %f", name, Tx, Ty, Tz, Rx, Ry, Rz, BoneLength);
+					std::stringstream ss(line);
+					ss >> name >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> BoneLength;
 					break;
+				}
 				case htr_nodepose:
+				{
 					int index;
 					float scale;
-					sscanf(line.c_str(), "%d %f %f %f %f %f %f %f", index, Tx, Ty, Tz, Rx, Ry, Rz, scale);
+					std::stringstream ss(line);
+					ss >> index >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> scale;
 					break;
+				}
+				case htr_hierarchy:
+				{
+					std::stringstream ss(line);
+					ss >> buffer[0] >> buffer[1];
+
+					HierarchyNode currentNode;
+					currentNode.name = buffer[0];
+					currentNode.selfIndex = out_hierarchy->mHierarchy->nodeList.size();
+					currentNode.parentIndex = out_hierarchy->mHierarchy->getNode(buffer[1]);
+
+					out_hierarchy->mHierarchy->addNode(currentNode);
+
+					break;
+				}
 				}
 			}
 		}
