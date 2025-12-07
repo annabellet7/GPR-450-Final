@@ -5,8 +5,7 @@
 #include <string>
 #include <iostream>
 
-namespace gorp
-{
+
 	struct HeaderData
 	{
 		std::string fileType;
@@ -76,4 +75,3 @@ namespace gorp
 	};
 
 	void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::string resourceFilePath);
-}

@@ -1,7 +1,6 @@
 #include "hierarchy.h"
 
-namespace gorp
-{
+
 	//Hierarchy::Hierarchy(Hierarchy* hierarchy, int size)
 	//{
 	//	mSize = size;
@@ -22,6 +21,3 @@ namespace gorp
 	{
 		nodeList.push_back(node);
 	}
-
-
-}

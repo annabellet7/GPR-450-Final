@@ -5,9 +5,8 @@
 #include <string>
 #include <vector>
 #include <stack>
-namespace gorp
-{
-	class HierarchyNode
+
+class HierarchyNode
 	{
 	public:
 		std::string name;
@@ -22,4 +21,4 @@ namespace gorp
 		void setNode(std::string name, int parent, int self);
 		int GetNode();
 	};
-}
+

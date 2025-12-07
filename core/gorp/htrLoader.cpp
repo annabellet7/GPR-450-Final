@@ -1,8 +1,7 @@
 #include "htrLoader.h"
 
 
-namespace gorp
-{
+
 	void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::string resourceFilePath)
 	{
 		std::ifstream fin(resourceFilePath);
@@ -117,4 +116,3 @@ namespace gorp
 		}
 	}
 
-}
