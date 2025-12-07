@@ -5,8 +5,9 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 {
 	std::ifstream fin(resourceFilePath);
 	fileSectionHTR currentSection = htr_file;
+	int animationIndex;
+	std::string currentBone;
 	std::string buffer[2];
-	std::string currentNode;
 
 	while (!fin.eof())
 	{
@@ -28,8 +29,8 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 			else
 			{
 				//read for frame pose
-				//currentSection = htr_nodepose
-
+				currentSection = htr_nodepose;
+				currentBone = line.substr(1, line.length() - 2);
 			}
 		}
 			
@@ -98,10 +99,12 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				float Tx, Ty, Tz, Rx, Ry, Rz, BoneLength;
 				std::stringstream ss(line);
 				ss >> name >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> BoneLength;
+
 				Transform transform;
 				transform.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
-				//out_hierarchy->local.push_back(transform);
+
+				out_hierarchy->animList[animationIndex].tNode[currentBone][0].local = transform;
 				break;
 			}
 			case htr_nodepose:
@@ -110,9 +113,12 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				float Tx, Ty, Tz, Rx, Ry, Rz, scale;
 				std::stringstream ss(line);
 				ss >> index >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> scale;
+
 				Transform transform;
 				transform.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
+
+				out_hierarchy->animList[animationIndex].tNode[currentBone][index].local = transform;
 				//out_hierarchy->local.push_back(transform);
 				break;
 			}
