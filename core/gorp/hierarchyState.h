@@ -4,12 +4,18 @@
 #include "transform.h"
 #include <vector>
 
+typedef std::vector<Transform> FramePose;
+typedef std::vector<FramePose> BoneList;
+typedef std::vector<BoneList> ClipPoses;
+//How to access
+//local[ClipIndex][BoneIndex][Frame]
+
 class HierarchyState
 {
 public:
 	gorp::Hierarchy* mHierarchy;
-	std::vector<Transform> local; //node relative to parent
-	std::vector<Transform> invLocal; //parent relative to node
-	std::vector<Transform> global; //node relative to root parent
-	std::vector<Transform> invGlobal; //root parent relative to node
+	ClipPoses local; //node relative to parent
+	ClipPoses invLocal; //parent relative to node
+	ClipPoses global; //node relative to root parent
+	ClipPoses invGlobal; //root parent relative to node
 };

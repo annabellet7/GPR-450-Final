@@ -10,9 +10,6 @@ namespace gorp
 		std::string buffer[2];
 		std::string currentNode;
 
-		int index;
-		float Tx, Ty, Tz, Rx, Ry, Rz;
-
 		while (!fin.eof())
 		{
 			std::string line;
@@ -74,15 +71,6 @@ namespace gorp
 					else if (buffer[0].compare(headerComponents[htr_EulerRotationOrder]))
 					{
 						headerData.eulerRotationOrder = buffer[1];
-
-						//dumbass turnary operators cuz theyre fun
-						/*eulerorder =
-							tolower(buffer[1][0]) == 'x' ?
-								(tolower(buffer[1][1]) == 'y' ? xyz : xzy) :
-							tolower(buffer[1][0]) == 'y' ?
-								(tolower(buffer[1][1]) == 'x' ? yxz : yzx) :
-								(tolower(buffer[1][1]) == 'x' ? zxy : zyx);
-						*/
 					}
 					else if (buffer[0].compare(headerComponents[htr_CalibrationUnits]))
 					{
@@ -109,17 +97,25 @@ namespace gorp
 				case htr_basepose:
 				{
 					std::string name;
-					float BoneLength;
+					float Tx, Ty, Tz, Rx, Ry, Rz, BoneLength;
 					std::stringstream ss(line);
 					ss >> name >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> BoneLength;
+					Transform transform;
+					transform.translate = glm::vec4(Tx, Ty, Tz, 1);
+					transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
+					//out_hierarchy->local.push_back(transform);
 					break;
 				}
 				case htr_nodepose:
 				{
 					int index;
-					float scale;
+					float Tx, Ty, Tz, Rx, Ry, Rz, scale;
 					std::stringstream ss(line);
 					ss >> index >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> scale;
+					Transform transform;
+					transform.translate = glm::vec4(Tx, Ty, Tz, 1);
+					transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
+					//out_hierarchy->local.push_back(transform);
 					break;
 				}
 				case htr_hierarchy:
