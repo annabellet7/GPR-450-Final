@@ -3,7 +3,7 @@
 
 namespace gorp
 {
-	void HTRLoader(std::vector<std::vector<HierarchyObj*>> clipPoseList, HeaderData headerData, const std::string resourceFilePath)
+	void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::string resourceFilePath)
 	{
 		std::ifstream fin(resourceFilePath);
 		fileSectionHTR currentSection = htr_file;
