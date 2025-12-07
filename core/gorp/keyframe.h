@@ -23,8 +23,8 @@ struct ClipTransition
 
 struct Clip
 {
-	std::string name;
-	float duration;
+	std::string name = "";
+	float duration = 0.0;
 	std::vector <Keyframe*> keyframes;
 
 	ClipTransition transitionForward[1], transitionReverse[1];

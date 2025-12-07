@@ -6,10 +6,11 @@
 
 struct clipCtrl
 {
-	std::string name;
-	int clipIndex, keyframeIndex;
-	float clipTime, keyframeTime;
-	float clipParam, keyframeParam;
+public:
+	std::string name = "";
+	int clipIndex = 0, keyframeIndex = 0;
+	float clipTime = 0.0, keyframeTime = 0.0;
+	float clipParam = 0.0, keyframeParam = 0.0;
 
 	std::vector<Clip const*> clips;
 	Clip const* clip;
@@ -17,3 +18,4 @@ struct clipCtrl
 };
 
 void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips);
+int a3clipControllerUpdate(clipCtrl* ctrl, float dt);
