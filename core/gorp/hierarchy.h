@@ -3,8 +3,6 @@
 #include "hierarchyNode.h"
 #include <string>
 
-namespace gorp
-{
 	class Hierarchy
 	{
 	public:
@@ -16,4 +14,3 @@ namespace gorp
 		void addNode(HierarchyNode node);
 		/*addNode(Hierarchy* hierarchy, )*/
 	};
-}

@@ -1,7 +1,6 @@
 #include "hierarchyNode.h"
 
-namespace gorp
-{
+
 	/*void HierarchyNode::setGlobal(glm::mat4 local, glm::vec3 pos, glm::quat rotation, glm::vec3 scale)
 	{
 		local = glm::mat4(1.0f);
@@ -58,4 +57,3 @@ namespace gorp
 	{
 		return selfIndex;
 	}
-}
