@@ -9,14 +9,11 @@
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 
-#include <map>
-#include <string>
-#include <vector>
 
 
 
 namespace ew {
-	ew::Mesh processAiMesh(aiMesh* aiMesh);
+	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene);
 
 	std::vector<VertexBoneData> vertex_to_bones;
 	std::vector<int> mesh_base_vertex;
@@ -26,11 +23,17 @@ namespace ew {
 	{
 		Assimp::Importer importer;
 		const aiScene* aiScene = importer.ReadFile(filePath, aiProcess_Triangulate);
-		for (size_t i = 0; i < aiScene->mNumMeshes; i++)
+		int totalVerts = 0;
+
+		/*for (int i = 0; i < aiScene->mNumMeshes; i++)
 		{
-			aiMesh* aiMesh = aiScene->mMeshes[i];
-			m_meshes.push_back(processAiMesh(aiMesh));
+			aiMesh* mesh = aiScene->mMeshes[i];
+			totalVerts += mesh->mNumVertices;
 		}
+		vertex_to_bones.resize(totalVerts);*/
+
+		m_meshes = processAiMesh(aiScene);
+		//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
 	}
 
 	void Model::draw()
@@ -77,48 +80,67 @@ namespace ew {
 		for (int i = 0; i < aiBone->mNumWeights; i++)
 		{
 			const aiVertexWeight& vw = aiBone->mWeights[i];
-			int global_vertex_id = mesh_base_vertex[index] + aiBone->mWeights[i].mVertexId;
+			int global_vertex_id = mesh_base_vertex[index] + vw.mVertexId;
 
 			assert(global_vertex_id < vertex_to_bones.size());
 			vertex_to_bones[global_vertex_id].AddBoneData(bone_id, vw.mWeight);
 		}
 	}
 
-	void parse_mesh_bones(aiMesh* aiMesh)
+	void parse_mesh_bones(aiMesh* aiMesh, int index)
 	{
 		for (int i = 0; i < aiMesh->mNumBones; i++)
 		{
-			parse_single_bone(i, aiMesh->mBones[i]);
+			parse_single_bone(index, aiMesh->mBones[i]);
 		}
 	}
 
 	//Utility functions local to this file
-	ew::Mesh processAiMesh(aiMesh* aiMesh) {
+	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene) {
 		ew::MeshData meshData;
-		for (size_t i = 0; i < aiMesh->mNumVertices; i++)
+		std::vector<ew::Mesh> meshes;
+
+		mesh_base_vertex.resize(aiScene->mNumMeshes);
+		int totalVerts = 0;
+
+		for (size_t k = 0; k < aiScene->mNumMeshes; k++)
 		{
-			ew::Vertex vertex;
-			vertex.pos = convertAIVec3(aiMesh->mVertices[i]);
-			if (aiMesh->HasNormals()) {
-				vertex.normal = convertAIVec3(aiMesh->mNormals[i]);
-			}
-			if (aiMesh->HasTextureCoords(0)) {
-				vertex.uv = glm::vec2(convertAIVec3(aiMesh->mTextureCoords[0][i]));
-			}
-			meshData.vertices.push_back(vertex);
-		}
-		//Convert faces to indices
-		for (size_t i = 0; i < aiMesh->mNumFaces; i++)
-		{
-			for (size_t j = 0; j < aiMesh->mFaces[i].mNumIndices; j++)
+			aiMesh* aiMesh = aiScene->mMeshes[k];
+			for (size_t i = 0; i < aiMesh->mNumVertices; i++)
 			{
-				meshData.indices.push_back(aiMesh->mFaces[i].mIndices[j]);
+				ew::Vertex vertex;
+				vertex.pos = convertAIVec3(aiMesh->mVertices[i]);
+				if (aiMesh->HasNormals()) {
+					vertex.normal = convertAIVec3(aiMesh->mNormals[i]);
+				}
+				if (aiMesh->HasTextureCoords(0)) {
+					vertex.uv = glm::vec2(convertAIVec3(aiMesh->mTextureCoords[0][i]));
+				}
+				meshData.vertices.push_back(vertex);
 			}
+			//Convert faces to indices
+			for (size_t i = 0; i < aiMesh->mNumFaces; i++)
+			{
+				for (size_t j = 0; j < aiMesh->mFaces[i].mNumIndices; j++)
+				{
+					meshData.indices.push_back(aiMesh->mFaces[i].mIndices[j]);
+				}
+			}
+
+			mesh_base_vertex[k] = totalVerts;
+			totalVerts += aiMesh->mNumVertices;
+			vertex_to_bones.resize(totalVerts);
+
+			if (aiMesh->HasBones())
+			{
+				parse_mesh_bones(aiMesh, k);
+			}
+			//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
+
+			meshes.push_back(meshData);
 		}
 
-		parse_mesh_bones(aiMesh);
-
-		return ew::Mesh(meshData);
+		return meshes;
 	}
 
 }

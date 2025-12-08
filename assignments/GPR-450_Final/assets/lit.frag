@@ -7,9 +7,12 @@ in Surface
 	vec3 WorldPos;
 	vec3 WorldNormal;
 	vec2 TexCoord;
+	flat ivec4 BoneIDs;
+	vec4 Weights;
 }fs_in;
 
 uniform sampler2D uMainTex;
+uniform int gDisplayBoneIndex;
 
 uniform vec3 uEyePos;
 uniform vec3 uLightDir = vec3(0.0, -1.0, 0.0);
@@ -39,5 +42,33 @@ void main()
 	lightColor += uAmbientColor * uMaterial.Ka;
 	vec3 objColor = texture(uMainTex, fs_in.TexCoord).rgb;
 
-	FragColor = vec4(objColor * lightColor, 1.0);
+	bool found = false;
+	for (int i = 0 ; i < 4 ; i++) 
+	{
+        if (fs_in.BoneIDs[i] == gDisplayBoneIndex) 
+		{
+           if (fs_in.Weights[i] >= 0.7) 
+		   {
+               FragColor = vec4(1.0, 0.0, 0.0, 0.0) * fs_in.Weights[i];
+           } 
+		   else if (fs_in.Weights[i] >= 0.4 && fs_in.Weights[i] <= 0.6) 
+		   {
+               FragColor = vec4(0.0, 1.0, 0.0, 0.0) * fs_in.Weights[i];
+           } 
+		   else if (fs_in.Weights[i] >= 0.1) 
+		   {
+               FragColor = vec4(1.0, 1.0, 0.0, 0.0) * fs_in.Weights[i];
+           }
+           found = true;
+           break;
+        }
+    }
+
+    if (!found ) {
+         FragColor = vec4(objColor * lightColor, 1.0);
+    }
+
+
+
+	//FragColor = vec4(objColor * lightColor, 1.0);
 }

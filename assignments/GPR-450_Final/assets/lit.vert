@@ -3,8 +3,8 @@
 layout (location = 0) in vec3 vPos; 
 layout (location = 1) in vec3 vNormal;
 layout (location = 2) in vec2 vTexCoord;
-layout (location = 3) in ivec4 BoneIDs;
-layout (location = 4) in vec4 Weights;
+layout (location = 3) in ivec4 vBoneIDs;
+layout (location = 4) in vec4 vWeights;
 
 uniform mat4 uModel;
 uniform mat4 uViewProjection;
@@ -16,6 +16,8 @@ out Surface
 	vec3 WorldPos;
 	vec3 WorldNormal;
 	vec2 TexCoord;
+	flat ivec4 BoneIDs;
+	vec4 Weights;
 }vs_out;
 
 void main()
@@ -24,8 +26,9 @@ void main()
 	vs_out.WorldNormal = transpose(inverse(mat3(uModel))) * vNormal;
 	vs_out.TexCoord = vTexCoord;
 
-	mat4 BoneTransform = gBones[BoneIDs[0]] * Weights[0] + gBones[BoneIDs[1]] * Weights[1] +  gBones[BoneIDs[2]] * Weights[2] +  gBones[BoneIDs[3]] * Weights[3];
+	mat4 BoneTransform = gBones[vBoneIDs[0]] * vWeights[0] + gBones[vBoneIDs[1]] * vWeights[1] +  gBones[vBoneIDs[2]] * vWeights[2] +  gBones[vBoneIDs[3]] * vWeights[3];
 
-	vec4 pos = BoneTransform * vec4(vPos, 1.0);
-	gl_Position = uViewProjection * uModel * pos;
+//	vec4 pos = BoneTransform * vec4(vPos, 1.0);
+//	gl_Position = uViewProjection * uModel * pos;
+	gl_Position = uViewProjection * uModel * vec4(vPos, 1.0);
 }

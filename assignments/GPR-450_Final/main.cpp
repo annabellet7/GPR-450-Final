@@ -26,10 +26,12 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initWindow(const char* title, int width, int height);
 void drawUI();
 void resetCamera(ew::Camera* camera, ew::CameraController* controller);
+void processInput(GLFWwindow* window);
 
 //Global state
 int screenWidth = 1080;
 int screenHeight = 720;
+int boneCounter = 0;
 float prevFrameTime;
 float deltaTime;
 ew::Camera camera;
@@ -53,10 +55,11 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader = ew::Shader("assets/lit.vert", "assets/lit.frag");
+	ew::Shader boneTest = ew::Shader("assets/boneTest.vert", "assets/boneTest.frag");
 	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
 	//Transform monkeyTransform;
 
-	//ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
+	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
 	NodeTransform t;
 	t.local.translate = glm::vec4(0, 0, 0, 1);
 	t.local.rotate = glm::vec4(0, 0, 0, 0);
@@ -134,6 +137,7 @@ int main() {
 		float time = (float)glfwGetTime();
 		deltaTime = time - prevFrameTime;
 		prevFrameTime = time;
+		processInput(window);
 
 		//RENDER
 		glClearColor(0.6f, 0.8f, 0.92f, 1.0f);
@@ -167,9 +171,10 @@ int main() {
 
 		//shader.setMat4("uModel", t.local.transformMat);
 		//shader.SetMat4Arr("gBones", notTrash);
+		shader.setInt("gDisplayBoneIndex", boneCounter);
 		shader.setMat4("uModel", t.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
-		//crayfoish.draw();
+		crayfoish.draw();
 
 		//calcTransformMat(&headTransform.global);
 		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
@@ -275,4 +280,16 @@ void resetCamera(ew::Camera* camera, ew::CameraController* controller)
 	camera->target = glm::vec3(0.0f);
 	controller->yaw = 0.0f;
 	controller->pitch = 0.0f;
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		boneCounter = (boneCounter + 1) % 55;
+	}
 }

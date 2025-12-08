@@ -6,6 +6,10 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include <map>
+#include <string>
+
+
 #define MAX_NUMBER_OF_BONES_PER_VERTEX 4
 
 namespace ew {
@@ -40,6 +44,7 @@ namespace ew {
 		glm::vec3 normal;
 		glm::vec2 uv;
 		std::vector<VertexBoneData> bones;
+		std::map<std::string, int> boneNameToIndexMap;
 	};
 
 	struct MeshData {
