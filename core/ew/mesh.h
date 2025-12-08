@@ -6,11 +6,40 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#define MAX_NUMBER_OF_BONES_PER_VERTEX 4
+
 namespace ew {
+
+	struct VertexBoneData
+	{
+		int BoneIDs[MAX_NUMBER_OF_BONES_PER_VERTEX] = { 0 };
+		float Weights[MAX_NUMBER_OF_BONES_PER_VERTEX] = { 0.0f };
+
+		VertexBoneData()
+		{
+
+		}
+
+		void AddBoneData(int BoneID, float Weight)
+		{
+			for (int i = 0; i < MAX_NUMBER_OF_BONES_PER_VERTEX; i++)
+			{
+				if (Weights[i] == 0)
+				{
+					BoneIDs[i] = BoneID;
+					Weights[i] = Weight;
+					return;
+				}
+			}
+			assert(0);
+		}
+	};
+
 	struct Vertex {
 		glm::vec3 pos;
 		glm::vec3 normal;
 		glm::vec2 uv;
+		std::vector<VertexBoneData> bones;
 	};
 
 	struct MeshData {

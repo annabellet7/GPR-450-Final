@@ -36,6 +36,14 @@ namespace ew {
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, uv)));
 			glEnableVertexAttribArray(2);
 
+			//
+			glVertexAttribIPointer(3, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_INT, sizeof(VertexBoneData), (const GLvoid*)0);
+			glEnableVertexAttribArray(3);
+			
+			//
+			glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)(MAX_NUMBER_OF_BONES_PER_VERTEX * sizeof(int32_t)));
+
 			m_initialized = true;
 		}
 

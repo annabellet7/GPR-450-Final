@@ -53,11 +53,10 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader = ew::Shader("assets/lit.vert", "assets/lit.frag");
-	ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
-	Transform monkeyTransform;
+	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
+	//Transform monkeyTransform;
 
-	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
-	ew::Transform nott;
+	//ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
 	NodeTransform t;
 	t.local.translate = glm::vec4(0, 0, 0, 1);
 	t.local.rotate = glm::vec4(0, 0, 0, 0);
@@ -137,7 +136,7 @@ int main() {
 		prevFrameTime = time;
 
 		//RENDER
-		glClearColor(0.6f,0.8f,0.92f,1.0f);
+		glClearColor(0.6f, 0.8f, 0.92f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.use();
@@ -157,12 +156,20 @@ int main() {
 		list->updateLocalInverse(list);
 		list->updateGlobalInverse(list);
 		list->updateObjectBindToCurrent(list);
+		//first node and last 14 nodes are trash
+		glm::mat4 notTrash[55];
+		int k = 1;
 
+		for (int i = 0; i < 55; i++)
+		{
+			notTrash[i] = list->nodePoseList->objectSpaceBindToCurrent[k].global.transformMat;
+		}
 
 		//shader.setMat4("uModel", t.local.transformMat);
+		//shader.SetMat4Arr("gBones", notTrash);
 		shader.setMat4("uModel", t.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
-		crayfoish.draw();
+		//crayfoish.draw();
 
 		//calcTransformMat(&headTransform.global);
 		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);

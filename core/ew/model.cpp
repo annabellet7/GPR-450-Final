@@ -9,8 +9,18 @@
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 
+#include <map>
+#include <string>
+#include <vector>
+
+
+
 namespace ew {
 	ew::Mesh processAiMesh(aiMesh* aiMesh);
+
+	std::vector<VertexBoneData> vertex_to_bones;
+	std::vector<int> mesh_base_vertex;
+	std::map<std::string, int> bone_name_to_index_map;
 
 	Model::Model(const std::string& filePath)
 	{
@@ -33,6 +43,53 @@ namespace ew {
 
 	glm::vec3 convertAIVec3(const aiVector3D& v) {
 		return glm::vec3(v.x, v.y, v.z);
+	}
+
+	int get_bone_id(const aiBone* aiBone)
+	{
+		int bone_id = 0;
+		std::string bone_name(aiBone->mName.C_Str());
+
+		if (bone_name_to_index_map.find(bone_name) == bone_name_to_index_map.end())
+		{
+			bone_id = bone_name_to_index_map.size();
+			bone_name_to_index_map[bone_name] = bone_id;
+		}
+		else
+		{
+			bone_id = bone_name_to_index_map[bone_name];
+		}
+
+		return bone_id;
+	}
+
+	void parse_single_bone(int index, aiBone* aiBone)
+	{
+		int bone_id = get_bone_id(aiBone);
+
+		
+		/*if (bond_id = m_BoneInfo.size())
+		{
+			BoneInfo bi(aiBone->mOffsetMatrix);
+			m_BoneInfo.push_back(bi);
+		}*/
+
+		for (int i = 0; i < aiBone->mNumWeights; i++)
+		{
+			const aiVertexWeight& vw = aiBone->mWeights[i];
+			int global_vertex_id = mesh_base_vertex[index] + aiBone->mWeights[i].mVertexId;
+
+			assert(global_vertex_id < vertex_to_bones.size());
+			vertex_to_bones[global_vertex_id].AddBoneData(bone_id, vw.mWeight);
+		}
+	}
+
+	void parse_mesh_bones(aiMesh* aiMesh)
+	{
+		for (int i = 0; i < aiMesh->mNumBones; i++)
+		{
+			parse_single_bone(i, aiMesh->mBones[i]);
+		}
 	}
 
 	//Utility functions local to this file
@@ -58,6 +115,9 @@ namespace ew {
 				meshData.indices.push_back(aiMesh->mFaces[i].mIndices[j]);
 			}
 		}
+
+		parse_mesh_bones(aiMesh);
+
 		return ew::Mesh(meshData);
 	}
 
