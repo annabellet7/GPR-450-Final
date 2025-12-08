@@ -110,7 +110,7 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				std::stringstream ss(line);
 				ss >> name >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> BoneLength;
 
-				NodeTransforms transform;
+				NodeTransform transform;
 				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
 
@@ -130,7 +130,7 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				std::stringstream ss(line);
 				ss >> index >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> scale;
 
-				NodeTransforms transform;
+				NodeTransform transform;
 				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
 
@@ -226,6 +226,12 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 			}
 			}
 		}
+	}
+
+	NodeTransform transform;
+	for (int i = 0; i < headerData->boneCount; i++)
+	{
+		out_hierarchy->nodePoseList->currentPose.push_back(transform);
 	}
 
 	fin.close();

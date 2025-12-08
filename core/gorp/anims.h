@@ -10,5 +10,5 @@ class Anim
 public:
 	std::string name;
 	//map node name or index to a list of node transforms
-	std::unordered_map<std::string, std::vector<NodeTransforms>> tNode; //for accessing use tNode[name] and that will be the nodetransform mapped to that name
+	std::unordered_map<std::string, std::vector<NodeTransform>> tNode; //for accessing use tNode[name] and that will be the nodetransform mapped to that name
 };

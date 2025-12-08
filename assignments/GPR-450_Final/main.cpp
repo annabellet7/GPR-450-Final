@@ -12,6 +12,7 @@
 #include <ew/shader.h>
 #include <ew/model.h>
 #include <ew/camera.h>
+#include <ew/transform.h>
 #include <ew/cameraController.h>
 #include <ew/texture.h>
 
@@ -54,6 +55,14 @@ int main() {
 	ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
 	Transform monkeyTransform;
 
+	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
+	ew::Transform nott;
+	NodeTransform t;
+	t.local.translate = glm::vec4(0, 0, 0, 1);
+	t.local.rotate = glm::vec4(0, 0, 0, 0);
+	t.local.scale = glm::vec4(1, 1, 1, 1);
+	calcTransformMat(t.local);
+
 	GLuint brickTex = ew::loadTexture("assets/stone_color.jpg");
 
 	camera.position = glm::vec3(0.0f, 0.0f, 5.0f);
@@ -80,7 +89,7 @@ int main() {
 	//skinning needs to happen somewhere in here
 
 	clipCtrlInit(ctrl, "anim1", clipNames, keyframeDuration, Animation::anim1keyframecount, 1);
-	clipControllerUpdate(ctrl, deltaTime);
+	
 
 
 	//fk stuff
@@ -134,6 +143,12 @@ int main() {
 		shader.setFloat("uMaterial.Shininess", material.Shininess);
 
 		clipControllerUpdate(ctrl, deltaTime);
+		list->poseLerp(ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
+
+		//shader.setMat4("uModel", t.local.transformMat);
+		shader.setMat4("uModel", t.local.transformMat);
+		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
+		crayfoish.draw();
 
 		//calcTransformMat(&headTransform.global);
 		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);

@@ -11,4 +11,7 @@ public:
 
 	HierarchyList();
 	~HierarchyList();
+	void poseLerp(int keyframeIndex0, int keyframeIndex1, int numNodes, float t);
+	void updateLocalInverse(HierarchyList* list);
+	void updateGlobalInverse(HierarchyList* list);
 };
