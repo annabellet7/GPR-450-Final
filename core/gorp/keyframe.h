@@ -4,8 +4,8 @@
 
 struct Keyframe
 {
-	int index;
-	float duration;
+	int index = 0;
+	float duration = 0.0;
 };
 
 typedef enum ClipTransitionFlag
@@ -33,6 +33,6 @@ struct Clip
 int keyframeInit(Keyframe* keyframe, int index, float duration);
 void deleteKeyframe(Keyframe* keyframe);
 int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag, Clip const* clip);
-void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes);
+void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes, int keyframeLength);
 void deleteClip(Clip* clip);
 void addKeyframeToClip(Clip* clip, Keyframe* keyframe);

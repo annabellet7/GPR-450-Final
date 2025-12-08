@@ -18,11 +18,11 @@ void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<C
 	ctrl->clipTime = 0.0;
 
 	ctrl->clips = clips;
-	ctrl->clip = clips[clipIndex];
+	//ctrl->clip = clips[clipIndex];
 	ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[0];
 }
 
-int a3clipControllerUpdate(clipCtrl* ctrl, float dt)
+int clipControllerUpdate(clipCtrl* ctrl, float dt)
 {
 	if (ctrl /*&& clipCtrl->clipPool*/)
 	{

@@ -26,14 +26,18 @@ int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag
 	return flag;
 }
 
-void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes)
+void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes, int keyframeLength)
 {
 	if (!clip)
 	{
 		clip = new Clip;
 	}
 	clip->name = name;
-	clip->keyframes = keyframes;
+	for (int i = 0; i < keyframeLength; i++)
+	{
+		clip->keyframes.push_back(keyframes[i]);
+	}
+	
 }
 
 void deleteClip(Clip* clip)

@@ -13,9 +13,9 @@ public:
 	float clipParam = 0.0, keyframeParam = 0.0;
 
 	std::vector<Clip const*> clips;
-	Clip const* clip;
+	Clip* clip;
 	Keyframe const* keyframe;
 };
 
 void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips);
-int a3clipControllerUpdate(clipCtrl* ctrl, float dt);
+int clipControllerUpdate(clipCtrl* ctrl, float dt);

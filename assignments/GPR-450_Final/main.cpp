@@ -12,13 +12,13 @@
 #include <ew/shader.h>
 #include <ew/model.h>
 #include <ew/camera.h>
-//#include <ew/transform.h>
 #include <ew/cameraController.h>
 #include <ew/texture.h>
 
 #include "gorp/hierarchyNode.h"
 #include "gorp/transform.h"
 #include "gorp/htrLoader.h"
+#include "gorp/clipCtrl.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initWindow(const char* title, int width, int height);
@@ -62,9 +62,32 @@ int main() {
 	camera.fov = 60.0f;
 
 	//Node test;
-	HierarchyList* listTest = new HierarchyList;
+	HierarchyList* list = new HierarchyList;
 	HeaderData* data = new HeaderData;
-	TestHTRLoader(listTest, data, "assets/crayfoish_animations.txt");
+	TestHTRLoader(list, data, "assets/crayfoish_animations.txt");
+
+	clipCtrl* ctrl = new clipCtrl;
+	float keyframeDuration = 0.0333333333333; // 1/framerate
+
+	//need to initalize clip controller to keep track of the keyframe and where we are in it
+	//once we do that we can use the keyframe were in to find the two poses to interpolate using where in the keyfame we are
+	//to do this we would need a pose lerp
+	//after we would solve fk on the current pose and that should give us a skeleton with animation
+	//skinning needs to happen somewhere in here
+
+	//for (int i = 0; i < data->numFrames; i++)
+	//{
+	//	keyframeInit(ctrl->clip->keyframes[i], i, keyframeDuration);
+	//}
+
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	clipInit(ctrl->clip, "idk", ctrl->clip->keyframes, Animation::anim1keyframecount);
+	//}
+
+	//clipCtrlInit(ctrl, "controller", 0, wait);
+
+
 
 	//fk stuff
 	//nodeTransforms headTransform;
@@ -115,6 +138,8 @@ int main() {
 		shader.setFloat("uMaterial.Kd", material.Kd);
 		shader.setFloat("uMaterial.Ks", material.Ks);
 		shader.setFloat("uMaterial.Shininess", material.Shininess);
+
+		clipControllerUpdate(ctrl, deltaTime);
 
 		//calcTransformMat(&headTransform.global);
 		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
