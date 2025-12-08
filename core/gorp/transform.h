@@ -37,6 +37,7 @@ public:
 	std::vector<NodeTransform> transformsList;
 	std::vector<NodeTransform> currentPose;
 	std::vector<NodeTransform> basePose;
+	std::vector<NodeTransform> objectSpaceBindToCurrent;
 
 	NodeTransformsList();
 	int getTransformAtNodeIndex(int index);

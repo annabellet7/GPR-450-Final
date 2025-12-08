@@ -232,7 +232,9 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 	for (int i = 0; i < headerData->boneCount; i++)
 	{
 		out_hierarchy->nodePoseList->currentPose.push_back(transform);
+		out_hierarchy->nodePoseList->objectSpaceBindToCurrent.push_back(transform);
 	}
+
 
 	fin.close();
 }

@@ -20,6 +20,7 @@
 #include "gorp/transform.h"
 #include "gorp/htrLoader.h"
 #include "gorp/clipCtrl.h"
+#include "gorp/kinematics.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initWindow(const char* title, int width, int height);
@@ -74,6 +75,12 @@ int main() {
 	HierarchyList* list = new HierarchyList;
 	HeaderData* data = new HeaderData;
 	TestHTRLoader(list, data, "assets/crayfoish_animations.txt");
+
+	//base pose fk
+	basePoseCovert(list);
+	baseSolveFK(list);
+	list->baseUpdateLocalInverse(list);
+	list->baseUpdateGlobalInverse(list);
 
 	clipCtrl* ctrl = new clipCtrl;
 	std::vector<std::string> clipNames;
@@ -144,6 +151,13 @@ int main() {
 
 		clipControllerUpdate(ctrl, deltaTime);
 		list->poseLerp(ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
+		poseConcat(list);
+		poseCovert(list);
+		solveFK(list);
+		list->updateLocalInverse(list);
+		list->updateGlobalInverse(list);
+		list->updateObjectBindToCurrent(list);
+
 
 		//shader.setMat4("uModel", t.local.transformMat);
 		shader.setMat4("uModel", t.local.transformMat);
