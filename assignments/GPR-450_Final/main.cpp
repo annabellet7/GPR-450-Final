@@ -61,7 +61,7 @@ int main() {
 	//fk stuff
 	nodeTransforms headTransform;
 	headTransform.local.translate = glm::vec4(0, 0, 0, 1);
-	headTransform.local.rotate = glm::vec4(0, 0, 0, 0);
+	headTransform.local.rotate = glm::vec4(0, 90, 0, 0);
 	headTransform.local.scale = glm::vec4(1, 1, 1, 1);
 
 	nodeTransforms childTransform;
@@ -109,15 +109,18 @@ int main() {
 		shader.setFloat("uMaterial.Shininess", material.Shininess);
 
 		//calcTransformMat(&headTransform.global);
-		headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
+		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
 		//monkeyTransform.rotation = glm::rotate(monkeyTransform.rotation, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-		shader.setMat4("uModel", headTransform.global.transformMat);
+		calcTransformMat(&headTransform.local);
+		shader.setMat4("uModel", headTransform.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
 		monkeyModel.draw();
 
-		calcTransformMat(&childTransform.global);
-		shader.setMat4("uModel", childTransform.global.transformMat);
+		FKSolver(transformList, hierarchy);
+
+		calcTransformMat(&childTransform.local);
+		shader.setMat4("uModel", childTransform.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
 		monkeyModel.draw();
@@ -125,7 +128,7 @@ int main() {
 		//headTransform.local.rotate = headTransform.local.rotate + glm::vec4(0, 1, 0, 0);
 		//calcTransformMat(&headTransform.local);
 		
-		//FKSolver(transformList, hierarchy);
+		
 
 		cameraController.move(window, &camera, deltaTime);
 

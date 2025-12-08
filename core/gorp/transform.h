@@ -31,7 +31,7 @@ static void FKSingle(std::vector<nodeTransforms>& t, std::vector<HierarchyNode>&
 	int parent = nodes[index].parentIndex;
 	t[index].global.transformMat = t[parent].global.transformMat * t[index].local.transformMat;
 }
-static void FKSolver(std::vector<nodeTransforms>& t, std::vector<HierarchyNode>& nodes)
+static void FKSolver(std::vector<nodeTransforms>& t, std::vector<HierarchyNode> nodes)
 {
 	for (int i = 0; i < t.size(); i++)
 	{
