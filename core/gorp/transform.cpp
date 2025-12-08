@@ -1,5 +1,36 @@
 #include "transform.h"
 
+NodeTransforms::NodeTransforms()
+{
+	nodeIndex = -1;
+	keyframeIndex = -1;
+
+	local.translate = glm::vec4(0.0);
+	local.rotate = glm::vec4(0.0);
+	local.scale = glm::vec4(1.0);
+	local.transformMat = glm::mat4(0.0);
+
+	invLocal.translate = glm::vec4(0.0);
+	invLocal.rotate = glm::vec4(0.0);
+	invLocal.scale = glm::vec4(1.0);
+	invLocal.transformMat = glm::mat4(0.0);
+
+	global .translate = glm::vec4(0.0);
+	global.rotate = glm::vec4(0.0);
+	global.scale = glm::vec4(1.0);
+	global.transformMat = glm::mat4(0.0);
+
+	invGlobal.translate = glm::vec4(0.0);
+	invGlobal.rotate = glm::vec4(0.0);
+	invGlobal.scale = glm::vec4(1.0);
+	invGlobal.transformMat = glm::mat4(0.0);
+}
+
+NodeTransformsList::NodeTransformsList()
+{
+	
+}
+
 void calcTransformMat(Transform* t)
 {
 	glm::mat4 Rx = glm::mat4(0), Ry = glm::mat4(0), Rz = glm::mat4(0), R = glm::mat4(0);

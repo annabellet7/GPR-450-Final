@@ -18,6 +18,7 @@ class HierarchyNode
 		void setGlobalInverse();
 		void setLocalBasedOnGlobal();
 		void setHierarchyBasedOnLocal();*/
+		HierarchyNode();
 		void setNode(std::string name, int parent, int self);
 		int GetNode();
 	};

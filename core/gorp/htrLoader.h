@@ -1,5 +1,5 @@
 #pragma once
-#include "hierarchyState.h"
+#include "hierarchyList.h"
 #include <fstream>
 #include <stdio.h>
 #include <string>
@@ -9,18 +9,26 @@
 
 struct HeaderData
 {
-	std::string fileType;
-	std::string dataType;
-	std::string fileVersion;
-	int boneCount;
-	int numFrames;
-	float frameRate;
-	std::string eulerRotationOrder;
-	std::string calibrationUnits;
+	std::string fileType = "";
+	std::string dataType = "";
+	std::string fileVersion = "";
+	int boneCount = 0;
+	int numFrames = 0;
+	float frameRate = 0;
+	std::string eulerRotationOrder = "";
+	std::string calibrationUnits = "";
 	bool isDegrees = true;
 	char globalAxisofGravity = 'y';
 	char boneLengthAxis = 'y';
 	float scaleFactor = 1.0f;
+};
+
+enum Animation 
+{
+	anim1keyframecount = 59, //walk?
+	anim2keyframecount = 29, //idle?
+	anim3keyframecount = 45 //jump?
+
 };
 
 //Enums and strings thanks to Dan Buckstein animal3D framework
@@ -75,4 +83,4 @@ enum fileHeaderComponentHTR
 	htr_ScaleFactor,
 };
 
-void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::string resourceFilePath);
+void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const std::string resourceFilePath);

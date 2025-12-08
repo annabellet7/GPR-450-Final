@@ -7,6 +7,11 @@
 	//	//hierarchy->mNode = (HierarchyNode*)malloc(size * sizeof(HierarchyNode));
 	//}
 
+Hierarchy::Hierarchy()
+{
+
+}
+
 	int Hierarchy::getNode(std::string name)
 	{
 		for (int i = 0; i < nodeList.size(); i++)

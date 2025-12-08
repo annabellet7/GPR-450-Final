@@ -18,6 +18,7 @@
 
 #include "gorp/hierarchyNode.h"
 #include "gorp/transform.h"
+#include "gorp/htrLoader.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initWindow(const char* title, int width, int height);
@@ -39,6 +40,8 @@ struct Material {
 	float Shininess = 128;
 }material;
 
+
+
 int main() {
 	GLFWwindow* window = initWindow("GPR-450 Final", screenWidth, screenHeight);
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
@@ -58,18 +61,23 @@ int main() {
 	camera.aspectRatio = (float)screenWidth / screenHeight;
 	camera.fov = 60.0f;
 
+	//Node test;
+	HierarchyList* listTest = new HierarchyList;
+	HeaderData* data = new HeaderData;
+	TestHTRLoader(listTest, data, "assets/crayfoish_animations.txt");
+
 	//fk stuff
-	nodeTransforms headTransform;
-	headTransform.local.translate = glm::vec4(0, 0, 0, 1);
-	headTransform.local.rotate = glm::vec4(0, 90, 0, 0);
-	headTransform.local.scale = glm::vec4(1, 1, 1, 1);
+	//nodeTransforms headTransform;
+	//headTransform.local.translate = glm::vec4(0, 0, 0, 1);
+	//headTransform.local.rotate = glm::vec4(0, 90, 0, 0);
+	//headTransform.local.scale = glm::vec4(1, 1, 1, 1);
 
-	nodeTransforms childTransform;
-	childTransform.local.translate = glm::vec4(1, 0, 0, 1);
-	childTransform.local.rotate = glm::vec4(0, 0, 0, 0);
-	childTransform.local.scale = glm::vec4(1, 1, 1, 1);
+	//nodeTransforms childTransform;
+	//childTransform.local.translate = glm::vec4(1, 0, 0, 1);
+	//childTransform.local.rotate = glm::vec4(0, 0, 0, 0);
+	//childTransform.local.scale = glm::vec4(1, 1, 1, 1);
 
-	HierarchyNode root;
+	/*HierarchyNode root;
 	root.name = "rootNode";
 	root.selfIndex = 0;
 	root.parentIndex = -1;
@@ -86,7 +94,7 @@ int main() {
 	hierarchy.push_back(leaf);
 
 	transformList.push_back(headTransform);
-	transformList.push_back(childTransform);
+	transformList.push_back(childTransform);*/
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -111,7 +119,7 @@ int main() {
 		//calcTransformMat(&headTransform.global);
 		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
 		//monkeyTransform.rotation = glm::rotate(monkeyTransform.rotation, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-		calcTransformMat(&headTransform.local);
+		/*calcTransformMat(&headTransform.local);
 		shader.setMat4("uModel", headTransform.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
@@ -123,7 +131,7 @@ int main() {
 		shader.setMat4("uModel", childTransform.local.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
-		monkeyModel.draw();
+		monkeyModel.draw();*/
 
 		//headTransform.local.rotate = headTransform.local.rotate + glm::vec4(0, 1, 0, 0);
 		//calcTransformMat(&headTransform.local);

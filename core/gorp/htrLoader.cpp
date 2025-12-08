@@ -1,13 +1,23 @@
 #include "htrLoader.h"
 
-
-void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::string resourceFilePath)
+void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const std::string resourceFilePath)
 {
 	std::ifstream fin(resourceFilePath);
+	if (!fin.is_open())
+	{
+		printf("Error: Unable to open file!\n");
+		return;
+	}
+
+
 	fileSectionHTR currentSection = htr_file;
 	int animationIndex;
 	std::string currentBone;
 	std::string buffer[2];
+	int basePoseCounter = 0;
+	int animationTracker = 0;
+	int nodeIndex = 0;
+	int keyframeCounter = 0, totalKeyframeCounter = 0;
 
 	while (!fin.eof())
 	{
@@ -33,7 +43,7 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				currentBone = line.substr(1, line.length() - 2);
 			}
 		}
-			
+
 		else if (line.at(0) != '#')
 		{
 			switch (currentSection)
@@ -43,53 +53,53 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				std::stringstream ss(line);
 				ss >> buffer[0] >> buffer[1];
 
-				if (buffer[0].compare(headerComponents[htr_FileType]))
+				if (buffer[0] == headerComponents[htr_FileType])
 				{
-					headerData.fileType = buffer[1];
+					headerData->fileType = buffer[1];
 				}
-				else if (buffer[0].compare(headerComponents[htr_DataType]))
+				else if (buffer[0] == headerComponents[htr_DataType])
 				{
-					headerData.dataType = buffer[1];
+					headerData->dataType = buffer[1];
 				}
-				else if (buffer[0].compare(headerComponents[htr_FileVersion]))
+				else if (buffer[0] == headerComponents[htr_FileVersion])
 				{
-					headerData.fileVersion = buffer[1];
+					headerData->fileVersion = buffer[1];
 				}
-				else if (buffer[0].compare(headerComponents[htr_NumSegments]))
+				else if (buffer[0] == headerComponents[htr_NumSegments])
 				{
-					headerData.boneCount = std::stoi(buffer[1]);
+					headerData->boneCount = std::stoi(buffer[1]);
 				}
-				else if (buffer[0].compare(headerComponents[htr_NumFrames]))
+				else if (buffer[0] == headerComponents[htr_NumFrames])
 				{
-					headerData.numFrames = std::stoi(buffer[1]);
+					headerData->numFrames = std::stoi(buffer[1]);
 				}
-				else if (buffer[0].compare(headerComponents[htr_DataFrameRate]))
+				else if (buffer[0] == headerComponents[htr_DataFrameRate])
 				{
-					headerData.frameRate = std::stof(buffer[1]);
+					headerData->frameRate = std::stof(buffer[1]);
 				}
-				else if (buffer[0].compare(headerComponents[htr_EulerRotationOrder]))
+				else if (buffer[0] == headerComponents[htr_EulerRotationOrder])
 				{
-					headerData.eulerRotationOrder = buffer[1];
+					headerData->eulerRotationOrder = buffer[1];
 				}
-				else if (buffer[0].compare(headerComponents[htr_CalibrationUnits]))
+				else if (buffer[0] == headerComponents[htr_CalibrationUnits])
 				{
-					headerData.calibrationUnits = buffer[1];
+					headerData->calibrationUnits = buffer[1];
 				}
-				else if (buffer[0].compare(headerComponents[htr_RotationUnits]))
+				else if (buffer[0] == headerComponents[htr_RotationUnits])
 				{
-					headerData.isDegrees = buffer[1].at(0) == 'd';
+					headerData->isDegrees = buffer[1].at(0) == 'D';
 				}
-				else if (buffer[0].compare(headerComponents[htr_GlobalAxisofGravity]))
+				else if (buffer[0] == headerComponents[htr_GlobalAxisofGravity])
 				{
-					headerData.globalAxisofGravity = buffer[1].at(0);
+					headerData->globalAxisofGravity = buffer[1].at(0);
 				}
-				else if (buffer[0].compare(headerComponents[htr_BoneLengthAxis]))
+				else if (buffer[0] == headerComponents[htr_BoneLengthAxis])
 				{
-					headerData.boneLengthAxis = buffer[1].at(0);
+					headerData->boneLengthAxis = buffer[1].at(0);
 				}
-				else if (buffer[0].compare(headerComponents[htr_ScaleFactor]))
+				else if (buffer[0] == headerComponents[htr_ScaleFactor])
 				{
-					headerData.scaleFactor = std::stof(buffer[1]);
+					headerData->scaleFactor = std::stof(buffer[1]);
 				}
 				break;
 			}
@@ -100,11 +110,17 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				std::stringstream ss(line);
 				ss >> name >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> BoneLength;
 
-				Transform transform;
-				transform.translate = glm::vec4(Tx, Ty, Tz, 1);
-				transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
+				NodeTransforms transform;
+				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
+				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
 
-				out_hierarchy->animList[animationIndex].tNode[currentBone][0].local = transform;
+				out_hierarchy->nodePoseList->basePose.push_back(transform);
+
+				out_hierarchy->nodePoseList->basePose[basePoseCounter].nodeIndex = basePoseCounter;
+				out_hierarchy->nodePoseList->basePose[basePoseCounter].keyframeIndex = -1;
+
+				basePoseCounter++;
+		
 				break;
 			}
 			case htr_nodepose:
@@ -114,11 +130,67 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 				std::stringstream ss(line);
 				ss >> index >> Tx >> Ty >> Tz >> Rx >> Ry >> Rz >> scale;
 
-				Transform transform;
-				transform.translate = glm::vec4(Tx, Ty, Tz, 1);
-				transform.rotate = glm::vec4(Rx, Ry, Rz, 0);
+				NodeTransforms transform;
+				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
+				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
 
-				out_hierarchy->animList[animationIndex].tNode[currentBone][index].local = transform;
+				switch (animationTracker)
+				{
+				case 0:
+					//out_hierarchy->nodePoseList->transformsList.push_back(transform);
+					out_hierarchy->nodePoseList->transformsList.push_back(transform);
+					
+					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].nodeIndex = nodeIndex;
+					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].keyframeIndex = index - 1;
+					
+					if (index % anim1keyframecount == 0)
+					{
+						nodeIndex++;
+						keyframeCounter++;
+					}
+					
+					totalKeyframeCounter++;
+					if (totalKeyframeCounter > headerData->boneCount * anim1keyframecount)
+					{
+						animationTracker = 1;
+						nodeIndex = 0;
+					}
+					break;
+				case 1:
+					out_hierarchy->nodePoseList->transformsList.push_back(transform);
+					//out_hierarchy->nodePoseList[totalKeyframeCounter].transformsList.push_back(transform);
+
+					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].nodeIndex = nodeIndex;
+					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].keyframeIndex = index - 1;
+
+					if (index % anim2keyframecount == 0)
+					{
+						nodeIndex++;
+						keyframeCounter++;
+					}
+
+					totalKeyframeCounter++;
+					if (totalKeyframeCounter > headerData->boneCount * anim2keyframecount)
+					{
+						animationTracker = 1;
+						nodeIndex = 0;
+					}
+					break;
+				case 2:
+					out_hierarchy->nodePoseList->transformsList.push_back(transform);
+					//out_hierarchy->nodePoseList[totalKeyframeCounter].transformsList.push_back(transform);
+
+					out_hierarchy->nodePoseList->basePose[totalKeyframeCounter].nodeIndex = nodeIndex;
+					out_hierarchy->nodePoseList->basePose[totalKeyframeCounter].keyframeIndex = index - 1;
+
+					if (index % anim2keyframecount == 0)
+					{
+						nodeIndex++;
+					}
+					break;
+				}
+
+				//out_hierarchy->animList[animationIndex].tNode[currentBone][index].local = transform;
 				//out_hierarchy->local.push_back(transform);
 				break;
 			}
@@ -129,15 +201,33 @@ void HTRLoader(HierarchyState* out_hierarchy, HeaderData headerData, const std::
 
 				HierarchyNode currentNode;
 				currentNode.name = buffer[0];
-				currentNode.selfIndex = out_hierarchy->mHierarchy->nodeList.size();
-				currentNode.parentIndex = out_hierarchy->mHierarchy->getNode(buffer[1]);
 
-				out_hierarchy->mHierarchy->addNode(currentNode);
+				if (buffer[1] == "GLOBAL")
+				{
+					currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size();
+					currentNode.parentIndex = out_hierarchy->hierarchy->getNode(buffer[1]);
+					out_hierarchy->hierarchy->addNode(currentNode);
+					break;
+				}
+
+				if (buffer[1] == "crayfoish")
+				{
+					currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size() - 1;
+					currentNode.parentIndex = -1;
+					out_hierarchy->hierarchy->addNode(currentNode);
+					break;
+				}
+
+				currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size() - 1;
+				currentNode.parentIndex = out_hierarchy->hierarchy->getNode(buffer[1]);
+				out_hierarchy->hierarchy->addNode(currentNode);
 
 				break;
 			}
 			}
 		}
 	}
+
+	fin.close();
 }
 
