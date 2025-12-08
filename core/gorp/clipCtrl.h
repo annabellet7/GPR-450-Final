@@ -12,10 +12,11 @@ public:
 	float clipTime = 0.0, keyframeTime = 0.0;
 	float clipParam = 0.0, keyframeParam = 0.0;
 
-	std::vector<Clip const*> clips;
+	std::vector<Clip*> clips;
 	Clip* clip;
-	Keyframe const* keyframe;
+	Keyframe* keyframe;
 };
 
-void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips);
+void clipCtrlInit(clipCtrl* ctrl, std::string name, std::vector<std::string> clipNames, float frameDuration, int keyFrameCount, int clipCount);
+void clipCtrlCleanUp(clipCtrl* ctrl);
 int clipControllerUpdate(clipCtrl* ctrl, float dt);

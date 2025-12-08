@@ -67,6 +67,10 @@ int main() {
 	TestHTRLoader(list, data, "assets/crayfoish_animations.txt");
 
 	clipCtrl* ctrl = new clipCtrl;
+	std::vector<std::string> clipNames;
+	clipNames.push_back("clipAnim1");
+	clipNames.push_back("clipAnim2");
+	clipNames.push_back("clipAnim3");
 	float keyframeDuration = 0.0333333333333; // 1/framerate
 
 	//need to initalize clip controller to keep track of the keyframe and where we are in it
@@ -75,18 +79,8 @@ int main() {
 	//after we would solve fk on the current pose and that should give us a skeleton with animation
 	//skinning needs to happen somewhere in here
 
-	//for (int i = 0; i < data->numFrames; i++)
-	//{
-	//	keyframeInit(ctrl->clip->keyframes[i], i, keyframeDuration);
-	//}
-
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	clipInit(ctrl->clip, "idk", ctrl->clip->keyframes, Animation::anim1keyframecount);
-	//}
-
-	//clipCtrlInit(ctrl, "controller", 0, wait);
-
+	clipCtrlInit(ctrl, "anim1", clipNames, keyframeDuration, Animation::anim1keyframecount, 1);
+	clipControllerUpdate(ctrl, deltaTime);
 
 
 	//fk stuff

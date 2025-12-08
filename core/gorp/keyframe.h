@@ -33,6 +33,6 @@ struct Clip
 int keyframeInit(Keyframe* keyframe, int index, float duration);
 void deleteKeyframe(Keyframe* keyframe);
 int clipTransitionInit(ClipTransition* transition, ClipTransitionFlag const flag, Clip const* clip);
-void clipInit(Clip* clip, std::string const name, std::vector <Keyframe*> keyframes, int keyframeLength);
+void clipInit(const Clip* clip, std::string const name, std::vector <Keyframe*> keyframes, int keyframeLength);
 void deleteClip(Clip* clip);
 void addKeyframeToClip(Clip* clip, Keyframe* keyframe);

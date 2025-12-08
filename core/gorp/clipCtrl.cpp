@@ -1,25 +1,53 @@
 #include "clipCtrl.h"
 
-void clipCtrlInit(clipCtrl* ctrl, std::string name, int clipIndex, std::vector<Clip const*> clips)
+void clipCtrlInit(clipCtrl* ctrl, std::string name, std::vector<std::string> clipNames, float frameDuration, int keyFrameCount, int clipCount)
 {
-	if (!ctrl)
-	{
-		ctrl = new clipCtrl;
-	}
-
 	ctrl->name = name;
 
 	ctrl->keyframeIndex = 0;
 	ctrl->keyframeTime = 0.0;
 	ctrl->keyframeParam = 0.0;
 
-	ctrl->clipIndex = clipIndex;
+	ctrl->clipIndex = 0;
 	ctrl->clipTime = 0.0;
 	ctrl->clipTime = 0.0;
 
-	ctrl->clips = clips;
-	//ctrl->clip = clips[clipIndex];
-	ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[0];
+	ctrl->keyframe = new Keyframe;
+	ctrl->keyframe->index = 0;
+	ctrl->keyframe->duration = frameDuration;
+
+
+	for (int i = 0; i < clipCount; i++)
+	{
+		ctrl->clip = new Clip;
+		
+		ctrl->clip->name = clipNames[i];
+		ctrl->clip->duration = keyFrameCount * frameDuration;
+
+		ctrl->clips.push_back(ctrl->clip);
+
+
+		for (int j = 0; j < keyFrameCount; j++)
+		{
+			Keyframe* frame = new Keyframe;
+			frame->index = j;
+			frame->duration = frameDuration;
+			addKeyframeToClip(ctrl->clips[i], frame);
+		}
+	}
+}
+
+void clipCtrlCleanUp(clipCtrl* ctrl)
+{
+	for (int j = 0; j < ctrl->clips.size(); j++)
+	{
+		for (int i = 0; i < ctrl->clips[j]->keyframes.size(); i++)
+		{
+			delete  ctrl->clips[j]->keyframes[i];
+		}
+		delete ctrl->clips[j];
+	}
+	
 }
 
 int clipControllerUpdate(clipCtrl* ctrl, float dt)
@@ -60,6 +88,7 @@ int clipControllerUpdate(clipCtrl* ctrl, float dt)
 			{
 				// set keyframe indices
 				ctrl->keyframeIndex += 1;
+
 
 				// set keyframe pointers
 				ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[ctrl->keyframeIndex];
