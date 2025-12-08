@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <math.h>
 
@@ -11,9 +12,12 @@
 #include <ew/shader.h>
 #include <ew/model.h>
 #include <ew/camera.h>
-#include <ew/transform.h>
+//#include <ew/transform.h>
 #include <ew/cameraController.h>
 #include <ew/texture.h>
+
+#include "gorp/hierarchyNode.h"
+#include "gorp/transform.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initWindow(const char* title, int width, int height);
@@ -45,7 +49,7 @@ int main() {
 
 	ew::Shader shader = ew::Shader("assets/lit.vert", "assets/lit.frag");
 	ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
-	ew::Transform monkeyTransform;
+	Transform monkeyTransform;
 
 	GLuint brickTex = ew::loadTexture("assets/stone_color.jpg");
 
@@ -53,6 +57,36 @@ int main() {
 	camera.target = glm::vec3(0.0f, 0.0f, 0.0f);
 	camera.aspectRatio = (float)screenWidth / screenHeight;
 	camera.fov = 60.0f;
+
+	//fk stuff
+	nodeTransforms headTransform;
+	headTransform.local.translate = glm::vec4(0, 0, 0, 1);
+	headTransform.local.rotate = glm::vec4(0, 0, 0, 0);
+	headTransform.local.scale = glm::vec4(1, 1, 1, 1);
+
+	nodeTransforms childTransform;
+	childTransform.local.translate = glm::vec4(1, 0, 0, 1);
+	childTransform.local.rotate = glm::vec4(0, 0, 0, 0);
+	childTransform.local.scale = glm::vec4(1, 1, 1, 1);
+
+	HierarchyNode root;
+	root.name = "rootNode";
+	root.selfIndex = 0;
+	root.parentIndex = -1;
+
+	HierarchyNode leaf;
+	leaf.name = "rootNode";
+	leaf.selfIndex = 1;
+	leaf.parentIndex = 0;
+
+	std::vector<HierarchyNode> hierarchy;
+	std::vector<nodeTransforms> transformList;
+
+	hierarchy.push_back(root);
+	hierarchy.push_back(leaf);
+
+	transformList.push_back(headTransform);
+	transformList.push_back(childTransform);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -74,13 +108,26 @@ int main() {
 		shader.setFloat("uMaterial.Ks", material.Ks);
 		shader.setFloat("uMaterial.Shininess", material.Shininess);
 
-		monkeyTransform.rotation = glm::rotate(monkeyTransform.rotation, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-		shader.setMat4("uModel", monkeyTransform.modelMatrix());
+		//calcTransformMat(&headTransform.global);
+		headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
+		//monkeyTransform.rotation = glm::rotate(monkeyTransform.rotation, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
+		shader.setMat4("uModel", headTransform.global.transformMat);
 		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
-		cameraController.move(window, &camera, deltaTime);
+		monkeyModel.draw();
+
+		calcTransformMat(&childTransform.global);
+		shader.setMat4("uModel", childTransform.global.transformMat);
+		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 
 		monkeyModel.draw();
+
+		//headTransform.local.rotate = headTransform.local.rotate + glm::vec4(0, 1, 0, 0);
+		//calcTransformMat(&headTransform.local);
+		
+		//FKSolver(transformList, hierarchy);
+
+		cameraController.move(window, &camera, deltaTime);
 
 		drawUI();
 
