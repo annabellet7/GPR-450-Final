@@ -118,4 +118,40 @@ void baseSolveFK(HierarchyList* list)
 	}
 }
 
+void poseRestore(NodeTransform* node)
+{
+}
+
+void resolvePostIK(HierarchyList* list, int index, glm::mat4 object)
+{
+	list->nodePoseList->currentPose[index].global = object;
+	list->nodePoseList->currentPose[index].invGlobal = glm::inverse(object);
+
+	solveIKSingle(list, index, list->hierarchy->nodeList[index].parentIndex);
+	
+	poseRestore(list->nodePoseList->currentPose[index]);
+	poseDeconcat(list->nodePoseList->currentPose[index].local,
+		list->nodePoseList->currentPose[index].local,
+		list->nodePoseList->basePose[index].local);
+}
+
+void updateLimbIK(HierarchyList* list, int const baseIndex, int const hingeIndex, int const endIndex, int const constraintIndex, glm::vec3 targetPosition)
+{
+	glm::mat4 baseObject = list->nodePoseList->currentPose[baseIndex].global.transformMat;
+	glm::mat4 hingeObject = list->nodePoseList->currentPose[hingeIndex].global.transformMat;
+	glm::mat4 endObject = list->nodePoseList->currentPose[endIndex].global.transformMat;
+
+	//Solve IK
+	{
+
+	}
+
+	//Resolve IK
+	{
+		resolvePostIK(list, baseIndex, baseObject.m);
+		resolvePostIK(list, hingeIndex, hingeObject.m);
+		resolvePostIK(list, endIndex, endObject.m);
+	}
+}
+
 
