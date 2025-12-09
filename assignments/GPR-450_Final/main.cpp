@@ -164,6 +164,7 @@ int main() {
 		for (int i = 0; i < 55; i++)
 		{
 			notTrash[i] = list->nodePoseList->objectSpaceBindToCurrent[k].global.transformMat;
+			notTrash[i][3][3] = 1.0f;
 		}
 
 		//shader.setMat4("uModel", t.local.transformMat);
