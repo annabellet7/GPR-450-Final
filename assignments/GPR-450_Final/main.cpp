@@ -55,7 +55,8 @@ int main() {
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 
-	ew::Shader shader = ew::Shader("assets/lit.vert", "assets/lit.frag");
+	ew::Shader shader = ew::Shader("assets/weightPaint.vert", "assets/weightPaint.frag");
+	ew::Shader anim = ew::Shader("assets/lit.vert", "assets/lit.frag");
 	//ew::Shader boneTest = ew::Shader("assets/boneTest.vert", "assets/boneTest.frag");
 	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
 	//Transform monkeyTransform;
@@ -68,6 +69,7 @@ int main() {
 	calcTransformMat(t.local);
 
 	GLuint brickTex = ew::loadTexture("assets/stone_color.jpg");
+	GLuint crayfoishTex = ew::loadTexture("assets/crayfoish.png");
 
 	camera.position = glm::vec3(0.0f, 0.0f, 5.0f);
 	camera.target = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -146,14 +148,6 @@ int main() {
 		glClearColor(0.6f, 0.8f, 0.92f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.use();
-
-		glBindTextureUnit(0, brickTex);
-		shader.setVec3("uEyePos", camera.position);
-		shader.setFloat("uMaterial.Ka", material.Ka);
-		shader.setFloat("uMaterial.Kd", material.Kd);
-		shader.setFloat("uMaterial.Ks", material.Ks);
-		shader.setFloat("uMaterial.Shininess", material.Shininess);
 
 		clipControllerUpdate(ctrl, deltaTime);
 		list->poseLerp(ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
@@ -174,9 +168,32 @@ int main() {
 
 		//shader.setMat4("uModel", t.local.transformMat);
 		//shader.SetMat4Arr("gBones", notTrash);
+		/*shader.use();
+
+		glBindTextureUnit(0, brickTex);
+		shader.setVec3("uEyePos", camera.position);
+		shader.setFloat("uMaterial.Ka", material.Ka);
+		shader.setFloat("uMaterial.Kd", material.Kd);
+		shader.setFloat("uMaterial.Ks", material.Ks);
+		shader.setFloat("uMaterial.Shininess", material.Shininess);
 		shader.setInt("gDisplayBoneIndex", boneCounter);
 		shader.setMat4("uModel", t.local.transformMat);
-		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
+		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());*/
+
+		anim.use();
+		glBindTextureUnit(0, crayfoishTex);
+		anim.SetMat4Arr("gBones", notTrash);
+		/*for (int i = 0; i < 55; i++)
+		{
+			anim.setMat4("gBones", notTrash[i]);
+		}*/
+		anim.setVec3("uEyePos", camera.position);
+		anim.setFloat("uMaterial.Ka", material.Ka);
+		anim.setFloat("uMaterial.Kd", material.Kd);
+		anim.setFloat("uMaterial.Ks", material.Ks);
+		anim.setFloat("uMaterial.Shininess", material.Shininess);
+		anim.setMat4("uModel", t.local.transformMat);
+		anim.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 		crayfoish.draw();
 
 		//calcTransformMat(&headTransform.global);

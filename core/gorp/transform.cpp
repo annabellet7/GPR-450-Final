@@ -48,22 +48,22 @@ NodeTransform operator+(const NodeTransform& lhs, const NodeTransform& rhs)
 
 	t.local.translate = lhs.local.translate + rhs.local.translate;
 	t.local.rotate = lhs.local.rotate + rhs.local.rotate;
-	t.local.scale = lhs.local.scale + rhs.local.scale;
+	//t.local.scale = lhs.local.scale + rhs.local.scale;
 	t.local.transformMat = lhs.local.transformMat + rhs.local.transformMat;
 
 	t.invLocal.translate = lhs.invLocal.translate + rhs.invLocal.translate;
 	t.invLocal.rotate = lhs.invLocal.rotate + rhs.invLocal.rotate;
-	t.invLocal.scale = lhs.invLocal.scale + rhs.invLocal.scale;
+	//t.invLocal.scale = lhs.invLocal.scale + rhs.invLocal.scale;
 	t.invLocal.transformMat = lhs.invLocal.transformMat + rhs.invLocal.transformMat;
 
 	t.global.translate = lhs.global.translate + rhs.global.translate;
 	t.global.rotate = lhs.global.rotate + rhs.global.rotate;
-	t.global.scale = lhs.global.scale + rhs.global.scale;
+	//t.global.scale = lhs.global.scale + rhs.global.scale;
 	t.global.transformMat = lhs.global.transformMat + rhs.global.transformMat;
 
 	t.invGlobal.translate = lhs.invGlobal.translate + rhs.invGlobal.translate;
 	t.invGlobal.rotate = lhs.invGlobal.rotate + rhs.invGlobal.rotate;
-	t.invGlobal.scale = lhs.invGlobal.scale + rhs.invGlobal.scale;
+	//t.invGlobal.scale = lhs.invGlobal.scale + rhs.invGlobal.scale;
 	t.invGlobal.transformMat = lhs.invGlobal.transformMat + rhs.invGlobal.transformMat;
 
 	return t;

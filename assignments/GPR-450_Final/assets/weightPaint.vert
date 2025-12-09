@@ -9,7 +9,7 @@ layout (location = 4) in vec4 vWeights;
 uniform mat4 uModel;
 uniform mat4 uViewProjection;
 
-uniform mat4 gBones[100];
+//uniform mat4 gBones[100];
 
 out Surface 
 {
@@ -28,9 +28,9 @@ void main()
 	vs_out.BoneIDs = vBoneIDs;
 	vs_out.Weights = vWeights;
 
-	mat4 BoneTransform = gBones[vBoneIDs[0]] * vWeights[0] + gBones[vBoneIDs[1]] * vWeights[1] +  gBones[vBoneIDs[2]] * vWeights[2] +  gBones[vBoneIDs[3]] * vWeights[3];
+	//mat4 BoneTransform = gBones[vBoneIDs[0]] * vWeights[0] + gBones[vBoneIDs[1]] * vWeights[1] +  gBones[vBoneIDs[2]] * vWeights[2] +  gBones[vBoneIDs[3]] * vWeights[3];
 
-	vec4 pos = BoneTransform * vec4(vPos, 1.0);
-	gl_Position = uViewProjection * uModel * pos;
-	//gl_Position = uViewProjection * uModel * vec4(vPos, 1.0);
+	//vec4 pos = BoneTransform * vec4(vPos, 1.0);
+	//gl_Position = uViewProjection * uModel * pos;
+	gl_Position = uViewProjection * uModel * vec4(vPos, 1.0);
 }

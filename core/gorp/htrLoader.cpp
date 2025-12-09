@@ -113,6 +113,7 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				NodeTransform transform;
 				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
+				transform.local.scale = glm::vec4(1.0);
 
 				out_hierarchy->nodePoseList->basePose.push_back(transform);
 
@@ -133,6 +134,7 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				NodeTransform transform;
 				transform.local.translate = glm::vec4(Tx, Ty, Tz, 1);
 				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
+				transform.local.scale = glm::vec4(1.0);
 
 				switch (animationTracker)
 				{

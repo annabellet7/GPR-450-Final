@@ -42,5 +42,19 @@ void main()
 	lightColor += uAmbientColor * uMaterial.Ka;
 	vec3 objColor = texture(uMainTex, fs_in.TexCoord).rgb;
 
-	FragColor = vec4(objColor * lightColor, 1.0);
+	bool found = false;
+	for (int i = 0 ; i < 4 ; i++) 
+	{
+        if (fs_in.BoneIDs[i] == gDisplayBoneIndex) 
+		{
+			FragColor = mix(vec4(0.0, 0.0, 1.0, 0.0), vec4(1.0, 0.0, 0.0, 0.0), fs_in.Weights[i]) ;
+	        found = true;
+			break;
+        }
+    }
+
+	if (!found ) 
+	{
+		FragColor = vec4(0.0, 0.0, 1.0, 0.0);
+	}
 }

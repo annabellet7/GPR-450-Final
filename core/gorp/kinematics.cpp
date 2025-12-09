@@ -37,7 +37,6 @@ void poseCovert(HierarchyList* list)
 		//zyx
 		R = Rz * Ry;
 		list->nodePoseList->currentPose[i].local.transformMat = R * Rx;
-
 		list->nodePoseList->currentPose[i].local.transformMat[3] = list->nodePoseList->currentPose[i].local.translate;
 	}
 }
