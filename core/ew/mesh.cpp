@@ -41,8 +41,8 @@ namespace ew {
 			glEnableVertexAttribArray(3);
 			
 			//
-			glEnableVertexAttribArray(4);
-			glVertexAttribPointer(4, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, boneNameToIndexMap)));
+			/*glEnableVertexAttribArray(4);
+			glVertexAttribPointer(4, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, boneNameToIndexMap)));*/
 
 			m_initialized = true;
 		}

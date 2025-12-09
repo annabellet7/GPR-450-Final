@@ -116,6 +116,7 @@ namespace ew {
 				if (aiMesh->HasTextureCoords(0)) {
 					vertex.uv = glm::vec2(convertAIVec3(aiMesh->mTextureCoords[0][i]));
 				}
+
 				meshData.vertices.push_back(vertex);
 			}
 			//Convert faces to indices
@@ -138,7 +139,11 @@ namespace ew {
 			//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
 
 			//meshData.vertices.push_back(vertex);
-			meshes.push_back(meshData);
+		}
+
+		for (int i = 0; i < vertex_to_bones.size(); i++)
+		{
+			meshData.vertices[i].bones = vertex_to_bones[i];
 		}
 
 		return meshes;
