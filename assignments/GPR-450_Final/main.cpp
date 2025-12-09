@@ -84,8 +84,8 @@ int main() {
 	//base pose fk
 	basePoseCovert(list);
 	baseSolveFK(list);
-	list->baseUpdateLocalInverse(list);
-	list->baseUpdateGlobalInverse(list);
+	baseUpdateLocalInverse(list);
+	baseUpdateGlobalInverse(list);
 
 	clipCtrl* ctrl = new clipCtrl;
 	std::vector<std::string> clipNames;
@@ -150,13 +150,13 @@ int main() {
 
 
 		clipControllerUpdate(ctrl, deltaTime);
-		list->poseLerp(ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
+		poseLerp(list, ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
 		poseConcat(list);
 		poseCovert(list);
 		solveFK(list);
-		list->updateLocalInverse(list);
-		list->updateGlobalInverse(list);
-		list->updateObjectBindToCurrent(list);
+		updateLocalInverse(list);
+		updateGlobalInverse(list);
+		updateObjectBindToCurrent(list);
 		//first node and last 14 nodes are trash
 		glm::mat4 notTrash[55];
 		int k = 1;

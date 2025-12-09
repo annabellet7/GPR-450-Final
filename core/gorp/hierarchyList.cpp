@@ -15,38 +15,52 @@ HierarchyList::~HierarchyList()
 	delete nodePoseList;
 }
 
-void HierarchyList::poseLerp(int keyframeIndex0, int keyframeIndex1, int numNodes, float t)
+void poseLerp(HierarchyList* list, int keyframeIndex0, int keyframeIndex1, int numNodes, float t)
 {
 	for (int i = 0; i < numNodes; i++)
 	{
-		nodePoseList->currentPose[i].local.rotate.x = (nodePoseList->transformsList[keyframeIndex1].local.rotate.x
-													- nodePoseList->transformsList[keyframeIndex0].local.rotate.x) * t
-													+ nodePoseList->transformsList[keyframeIndex0].local.rotate.x;
+		NodeTransform k0, k1;
 
-		nodePoseList->currentPose[i].local.rotate.y = (nodePoseList->transformsList[keyframeIndex1].local.rotate.y
-													- nodePoseList->transformsList[keyframeIndex0].local.rotate.y) * t
-													+ nodePoseList->transformsList[keyframeIndex0].local.rotate.y;
+		for (int j = 0; j < list->nodePoseList->transformsList.size(); j++)
+		{
+			if (list->nodePoseList->transformsList[j].keyframeIndex == keyframeIndex0 && list->nodePoseList->transformsList[j].nodeIndex == i)
+			{
+				k0 = list->nodePoseList->transformsList[j];
+			}
+			if (list->nodePoseList->transformsList[j].keyframeIndex == keyframeIndex1 && list->nodePoseList->transformsList[j].nodeIndex == i)
+			{
+				k1 = list->nodePoseList->transformsList[j];
+			}
+		}
+		list->nodePoseList->currentPose[i].local.rotate.x = (k1.local.rotate.x
+													- k0.local.rotate.x) * t
+													+ k0.local.rotate.x;
 
-		nodePoseList->currentPose[i].local.rotate.z = (nodePoseList->transformsList[keyframeIndex1].local.rotate.z
-													- nodePoseList->transformsList[keyframeIndex0].local.rotate.z) * t
-													+ nodePoseList->transformsList[keyframeIndex0].local.rotate.z;
+		list->nodePoseList->currentPose[i].local.rotate.y = (k1.local.rotate.y
+													- k0.local.rotate.y) * t
+													+ k0.local.rotate.y;
+
+		list->nodePoseList->currentPose[i].local.rotate.z = (k1.local.rotate.z
+													- k0.local.rotate.z) * t
+													+ k0.local.rotate.z;
 
 
-		nodePoseList->currentPose[i].local.translate.x = (nodePoseList->transformsList[keyframeIndex1].local.translate.x
-														- nodePoseList->transformsList[keyframeIndex0].local.translate.x) * t
-														+ nodePoseList->transformsList[keyframeIndex0].local.translate.x;
+		list->nodePoseList->currentPose[i].local.translate.x = (k1.local.translate.x
+														- k0.local.translate.x) * t
+														+ k0.local.translate.x;
 
-		nodePoseList->currentPose[i].local.translate.y = (nodePoseList->transformsList[keyframeIndex1].local.translate.y
-														- nodePoseList->transformsList[keyframeIndex0].local.translate.y) * t
-														+ nodePoseList->transformsList[keyframeIndex0].local.translate.y;
+		list->nodePoseList->currentPose[i].local.translate.y = (k1.local.translate.y
+														- k0.local.translate.y) * t
+														+ k0.local.translate.y;
 
-		nodePoseList->currentPose[i].local.translate.z = (nodePoseList->transformsList[keyframeIndex1].local.translate.z
-														- nodePoseList->transformsList[keyframeIndex0].local.translate.z) * t
-														+ nodePoseList->transformsList[keyframeIndex0].local.translate.z;
+		list->nodePoseList->currentPose[i].local.translate.z = (k1.local.translate.z
+														- k0.local.translate.z) * t
+														+ k0.local.translate.z;
+		//delete k0; delete k1;
 	}
 }
 
-void HierarchyList::updateLocalInverse(HierarchyList* list)
+void updateLocalInverse(HierarchyList* list)
 {
 	for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
 	{
@@ -73,7 +87,7 @@ void HierarchyList::updateLocalInverse(HierarchyList* list)
 	
 }
 
-void HierarchyList::baseUpdateLocalInverse(HierarchyList* list)
+void baseUpdateLocalInverse(HierarchyList* list)
 {
 	for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
 	{
@@ -100,7 +114,7 @@ void HierarchyList::baseUpdateLocalInverse(HierarchyList* list)
 
 }
 
-void HierarchyList::updateGlobalInverse(HierarchyList* list)
+void updateGlobalInverse(HierarchyList* list)
 {
 	for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
 	{
@@ -126,7 +140,7 @@ void HierarchyList::updateGlobalInverse(HierarchyList* list)
 	}
 }
 
-void HierarchyList::baseUpdateGlobalInverse(HierarchyList* list)
+void baseUpdateGlobalInverse(HierarchyList* list)
 {
 	for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
 	{
@@ -152,7 +166,7 @@ void HierarchyList::baseUpdateGlobalInverse(HierarchyList* list)
 	}
 }
 
-void HierarchyList::updateObjectBindToCurrent(HierarchyList* list)
+void updateObjectBindToCurrent(HierarchyList* list)
 {
 	for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
 	{
