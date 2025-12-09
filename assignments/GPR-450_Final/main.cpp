@@ -55,7 +55,7 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader = ew::Shader("assets/lit.vert", "assets/lit.frag");
-	ew::Shader boneTest = ew::Shader("assets/boneTest.vert", "assets/boneTest.frag");
+	//ew::Shader boneTest = ew::Shader("assets/boneTest.vert", "assets/boneTest.frag");
 	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
 	//Transform monkeyTransform;
 

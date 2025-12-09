@@ -66,7 +66,7 @@ namespace ew {
 		return bone_id;
 	}
 
-	void parse_single_bone(int index, aiBone* aiBone)
+	void parse_single_bone(int index, aiBone* aiBone, Vertex v)
 	{
 		int bone_id = get_bone_id(aiBone);
 
@@ -87,11 +87,11 @@ namespace ew {
 		}
 	}
 
-	void parse_mesh_bones(aiMesh* aiMesh, int index)
+	void parse_mesh_bones(aiMesh* aiMesh, int index, Vertex v)
 	{
 		for (int i = 0; i < aiMesh->mNumBones; i++)
 		{
-			parse_single_bone(index, aiMesh->mBones[i]);
+			parse_single_bone(index, aiMesh->mBones[i], v);
 		}
 	}
 
@@ -99,6 +99,7 @@ namespace ew {
 	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene) {
 		ew::MeshData meshData;
 		std::vector<ew::Mesh> meshes;
+		ew::Vertex vertex;
 
 		mesh_base_vertex.resize(aiScene->mNumMeshes);
 		int totalVerts = 0;
@@ -108,7 +109,6 @@ namespace ew {
 			aiMesh* aiMesh = aiScene->mMeshes[k];
 			for (size_t i = 0; i < aiMesh->mNumVertices; i++)
 			{
-				ew::Vertex vertex;
 				vertex.pos = convertAIVec3(aiMesh->mVertices[i]);
 				if (aiMesh->HasNormals()) {
 					vertex.normal = convertAIVec3(aiMesh->mNormals[i]);
@@ -133,10 +133,11 @@ namespace ew {
 
 			if (aiMesh->HasBones())
 			{
-				parse_mesh_bones(aiMesh, k);
+				parse_mesh_bones(aiMesh, k, vertex);
 			}
 			//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
 
+			//meshData.vertices.push_back(vertex);
 			meshes.push_back(meshData);
 		}
 

@@ -43,8 +43,8 @@ namespace ew {
 		glm::vec3 pos;
 		glm::vec3 normal;
 		glm::vec2 uv;
-		std::vector<VertexBoneData> bones;
-		std::map<std::string, int> boneNameToIndexMap;
+		VertexBoneData bones[4];
+		std::pair<std::string, int> boneNameToIndexMap[4];
 	};
 
 	struct MeshData {
