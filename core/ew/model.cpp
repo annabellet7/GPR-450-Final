@@ -13,7 +13,7 @@
 
 
 namespace ew {
-	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene);
+	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene, std::vector<ew::Mesh> &meshes);
 
 	std::vector<VertexBoneData> vertex_to_bones;
 	std::vector<int> mesh_base_vertex;
@@ -32,7 +32,7 @@ namespace ew {
 		}
 		vertex_to_bones.resize(totalVerts);*/
 
-		m_meshes = processAiMesh(aiScene);
+		processAiMesh(aiScene, m_meshes);
 		//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
 	}
 
@@ -66,7 +66,7 @@ namespace ew {
 		return bone_id;
 	}
 
-	void parse_single_bone(int index, aiBone* aiBone, Vertex v)
+	void parse_single_bone(int index, aiBone* aiBone)
 	{
 		int bone_id = get_bone_id(aiBone);
 
@@ -87,18 +87,18 @@ namespace ew {
 		}
 	}
 
-	void parse_mesh_bones(aiMesh* aiMesh, int index, Vertex v)
+	void parse_mesh_bones(aiMesh* aiMesh, int index)
 	{
 		for (int i = 0; i < aiMesh->mNumBones; i++)
 		{
-			parse_single_bone(index, aiMesh->mBones[i], v);
+			parse_single_bone(index, aiMesh->mBones[i]);
 		}
 	}
 
 	//Utility functions local to this file
-	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene) {
+	std::vector<ew::Mesh> processAiMesh(const aiScene* aiScene, std::vector<ew::Mesh>& meshes) {
 		ew::MeshData meshData;
-		std::vector<ew::Mesh> meshes;
+		//std::vector<ew::Mesh> meshes;
 		ew::Vertex vertex;
 
 		mesh_base_vertex.resize(aiScene->mNumMeshes);
@@ -127,24 +127,38 @@ namespace ew {
 					meshData.indices.push_back(aiMesh->mFaces[i].mIndices[j]);
 				}
 			}
+			//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
 
+			//meshData.vertices.push_back(vertex);
+		}
+
+		for (int k = 0; k < aiScene->mNumMeshes; k++)
+		{
+			aiMesh* aiMesh = aiScene->mMeshes[k];
 			mesh_base_vertex[k] = totalVerts;
 			totalVerts += aiMesh->mNumVertices;
 			vertex_to_bones.resize(totalVerts);
 
 			if (aiMesh->HasBones())
 			{
-				parse_mesh_bones(aiMesh, k, vertex);
+				parse_mesh_bones(aiMesh, k);
 			}
-			//m_meshes.push_back(processAiMesh(aiMesh, aiScene, totalVerts));
-
-			//meshData.vertices.push_back(vertex);
 		}
 
 		for (int i = 0; i < vertex_to_bones.size(); i++)
 		{
-			meshData.vertices[i].bones = vertex_to_bones[i];
+			meshData.vertices[i].boneIDs[0] = vertex_to_bones[i].BoneIDs[0];
+			meshData.vertices[i].boneIDs[1] = vertex_to_bones[i].BoneIDs[1];
+			meshData.vertices[i].boneIDs[2] = vertex_to_bones[i].BoneIDs[2];
+			meshData.vertices[i].boneIDs[3] = vertex_to_bones[i].BoneIDs[3];
+			
+			meshData.vertices[i].weights[0] = vertex_to_bones[i].Weights[0];
+			meshData.vertices[i].weights[1] = vertex_to_bones[i].Weights[1];
+			meshData.vertices[i].weights[2] = vertex_to_bones[i].Weights[2];
+			meshData.vertices[i].weights[3] = vertex_to_bones[i].Weights[3];
 		}
+
+		meshes.push_back(meshData);
 
 		return meshes;
 	}

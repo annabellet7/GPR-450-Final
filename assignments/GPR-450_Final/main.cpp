@@ -27,6 +27,7 @@ GLFWwindow* initWindow(const char* title, int width, int height);
 void drawUI();
 void resetCamera(ew::Camera* camera, ew::CameraController* controller);
 void processInput(GLFWwindow* window);
+void swapBone(GLFWwindow* window, bool& wasPressed);
 
 //Global state
 int screenWidth = 1080;
@@ -59,7 +60,7 @@ int main() {
 	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
 	//Transform monkeyTransform;
 
-	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh.fbx");
+	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh_rig.fbx");
 	NodeTransform t;
 	t.local.translate = glm::vec4(0, 0, 0, 1);
 	t.local.rotate = glm::vec4(0, 0, 0, 0);
@@ -130,6 +131,7 @@ int main() {
 
 	transformList.push_back(headTransform);
 	transformList.push_back(childTransform);*/
+	bool pressingSpace = false;
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -138,6 +140,7 @@ int main() {
 		deltaTime = time - prevFrameTime;
 		prevFrameTime = time;
 		processInput(window);
+		swapBone(window, pressingSpace);
 
 		//RENDER
 		glClearColor(0.6f, 0.8f, 0.92f, 1.0f);
@@ -288,8 +291,18 @@ void processInput(GLFWwindow* window)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	
+}
+
+void swapBone(GLFWwindow* window, bool& wasPressed)
+{
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !wasPressed)
 	{
 		boneCounter = (boneCounter + 1) % 55;
+		wasPressed = true;
+	}
+	else if (!glfwGetKey(window, GLFW_KEY_SPACE))
+	{
+		wasPressed = false;
 	}
 }

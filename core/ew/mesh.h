@@ -43,7 +43,9 @@ namespace ew {
 		glm::vec3 pos;
 		glm::vec3 normal;
 		glm::vec2 uv;
-		VertexBoneData bones;
+		//VertexBoneData bones;
+		glm::ivec4 boneIDs;
+		glm::vec4 weights;
 		//std::pair<std::string, int> boneNameToIndexMap[4];
 	};
 

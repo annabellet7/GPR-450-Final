@@ -37,12 +37,12 @@ namespace ew {
 			glEnableVertexAttribArray(2);
 
 			//
-			glVertexAttribIPointer(3, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_INT, sizeof(Vertex), (const void*)(offsetof(Vertex, bones)));
+			glVertexAttribIPointer(3, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_INT, sizeof(Vertex), (const void*)(offsetof(Vertex, boneIDs)));
 			glEnableVertexAttribArray(3);
 			
 			//
-			/*glEnableVertexAttribArray(4);
-			glVertexAttribPointer(4, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, boneNameToIndexMap)));*/
+			glVertexAttribPointer(4, MAX_NUMBER_OF_BONES_PER_VERTEX, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, weights)));
+			glEnableVertexAttribArray(4);
 
 			m_initialized = true;
 		}

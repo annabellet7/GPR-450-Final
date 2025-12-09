@@ -47,28 +47,12 @@ void main()
 	{
         if (fs_in.BoneIDs[i] == gDisplayBoneIndex) 
 		{
-           if (fs_in.Weights[i] >= 0.7) 
-		   {
-               FragColor = vec4(1.0, 0.0, 0.0, 0.0) * fs_in.Weights[i];
-           } 
-		   else if (fs_in.Weights[i] >= 0.4 && fs_in.Weights[i] <= 0.6) 
-		   {
-               FragColor = vec4(0.0, 1.0, 0.0, 0.0) * fs_in.Weights[i];
-           } 
-		   else if (fs_in.Weights[i] >= 0.1) 
-		   {
-               FragColor = vec4(1.0, 1.0, 0.0, 0.0) * fs_in.Weights[i];
-           }
-           found = true;
-           break;
+			FragColor = mix(vec4(0.0, 0.0, 1.0, 0.0), vec4(1.0, 0.0, 0.0, 0.0), fs_in.Weights[i]) ;
+	        found = true;
+			break;
         }
     }
 
-    if (!found ) {
-         FragColor = vec4(objColor * lightColor, 1.0);
-    }
-
-
-
-	//FragColor = vec4(objColor * lightColor, 1.0);
+	if (!found ) {
+         FragColor = vec4(0.0, 0.0, 1.0, 0.0);
 }
