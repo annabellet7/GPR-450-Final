@@ -52,7 +52,7 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader = ew::Shader("assets/weightPaint.vert", "assets/weightPaint.frag");
@@ -163,7 +163,8 @@ int main() {
 
 		for (int i = 0; i < 55; i++)
 		{
-			notTrash[i] = list->nodePoseList->objectSpaceBindToCurrent[k].global.transformMat;
+			notTrash[i] = list->nodePoseList->objectSpaceBindToCurrent[i+1].global.transformMat;
+			//list->nodePoseList->
 			notTrash[i][3][3] = 1.0f;
 		}
 
