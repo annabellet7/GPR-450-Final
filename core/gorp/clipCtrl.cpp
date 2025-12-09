@@ -12,11 +12,12 @@ void clipCtrlInit(clipCtrl* ctrl, std::string name, std::vector<std::string> cli
 	ctrl->clipTime = 0.0;
 	ctrl->clipTime = 0.0;
 
+	//holds current keyframe
 	ctrl->keyframe = new Keyframe;
 	ctrl->keyframe->index = 0;
 	ctrl->keyframe->duration = frameDuration;
 
-
+	//creates a new clip 
 	for (int i = 0; i < clipCount; i++)
 	{
 		ctrl->clip = new Clip;
@@ -26,7 +27,7 @@ void clipCtrlInit(clipCtrl* ctrl, std::string name, std::vector<std::string> cli
 
 		ctrl->clips.push_back(ctrl->clip);
 
-
+		//creates new keyframes per clip
 		for (int j = 0; j < keyFrameCount; j++)
 		{
 			Keyframe* frame = new Keyframe;
@@ -37,6 +38,7 @@ void clipCtrlInit(clipCtrl* ctrl, std::string name, std::vector<std::string> cli
 	}
 }
 
+//clean up memory
 void clipCtrlCleanUp(clipCtrl* ctrl)
 {
 	for (int j = 0; j < ctrl->clips.size(); j++)
@@ -52,38 +54,23 @@ void clipCtrlCleanUp(clipCtrl* ctrl)
 
 int clipControllerUpdate(clipCtrl* ctrl, float dt)
 {
-	if (ctrl /*&& clipCtrl->clipPool*/)
+	if (ctrl)
 	{
-		//-----------------------------------------------------------------------------
-		//****TO-DO-ANIM-PROJECT-1: IMPLEMENT ME
-		//-----------------------------------------------------------------------------
-
-				// variables
 		float overstep;
-
-		// time step
-		//dt *= ctrl->playback_sec;
 		ctrl->clipTime += dt;
 		ctrl->keyframeTime += dt;
-		//dt *= clipCtrl->playback_stepPerSec;
-		//clipCtrl->clipTime_step += (a3i32)dt;
-		//clipCtrl->keyframeTime_step += (a3i32)dt;
 
 		// resolve forward
 		while ((overstep = ctrl->keyframeTime - ctrl->keyframe->duration) >= 0.0)
 		{
 			// are we passing the forward terminus of the clip
-			if (ctrl->keyframeIndex == ctrl->clip->keyframes.size() - 1/*ctrl->clip->keyframeIndex_final*/)
+			if (ctrl->keyframeIndex == ctrl->clip->keyframes.size() - 1)
 			{
 				// handle forward transition
-
-				// default testing behavior: loop with overstep
-				ctrl->keyframeIndex = 0 /*ctrl->clip->keyframeIndex_first*/;
+				ctrl->keyframeIndex = 0;
 				ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[ctrl->keyframeIndex];
-				//ctrl->keyframe = ctrl->clipPool->keyframe + ctrl->keyframeIndex;
 				ctrl->keyframeTime = overstep;
 			}
-			// are we simply moving to the next keyframe
 			else
 			{
 				// set keyframe indices
@@ -92,7 +79,6 @@ int clipControllerUpdate(clipCtrl* ctrl, float dt)
 
 				// set keyframe pointers
 				ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[ctrl->keyframeIndex];
-				//ctrl->keyframe = ctrl->clipPool->keyframe + ctrl->keyframeIndex;
 
 				// new time is just the overstep
 				ctrl->keyframeTime = overstep;
@@ -102,17 +88,12 @@ int clipControllerUpdate(clipCtrl* ctrl, float dt)
 		// resolve reverse
 		while ((overstep = ctrl->keyframeTime) < 0.0)
 		{
-			// are we passing the reverse terminus of the clip
 			if (ctrl->keyframeIndex == 0)
 			{
-				// handle reverse transition
-
-				// default testing behavior: loop with overstep
 				ctrl->keyframeIndex = ctrl->clip->keyframes.size() - 1;
 				ctrl->keyframe = ctrl->clips[ctrl->clipIndex]->keyframes[ctrl->keyframeIndex];
 				ctrl->keyframeTime = overstep + ctrl->keyframe->duration;
 			}
-			// are we simply moving to the previous keyframe
 			else
 			{
 				ctrl->keyframeIndex -= 1;
@@ -131,10 +112,6 @@ int clipControllerUpdate(clipCtrl* ctrl, float dt)
 
 		// done
 		return 1;
-
-		//-----------------------------------------------------------------------------
-		//****END-TO-DO-PROJECT-1
-		//-----------------------------------------------------------------------------
 	}
 	return -1;
 }

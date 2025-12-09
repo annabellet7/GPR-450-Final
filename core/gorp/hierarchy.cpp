@@ -1,33 +1,17 @@
 #include "hierarchy.h"
 
-
-	//Hierarchy::Hierarchy(Hierarchy* hierarchy, int size)
-	//{
-	//	mSize = size;
-	//	//hierarchy->mNode = (HierarchyNode*)malloc(size * sizeof(HierarchyNode));
-	//}
-
-Hierarchy::Hierarchy()
+//get node given node name
+int Hierarchy::getNode(std::string name)
 {
+	for (int i = 0; i < nodeList.size(); i++)
+	{
+		if (nodeList[i].name == name) return nodeList[i].selfIndex;
+	}
 
+	return -1;
 }
 
-	int Hierarchy::getNode(std::string name)
-	{
-		for (int i = 0; i < nodeList.size(); i++)
-		{
-			if (nodeList[i].name == name) return nodeList[i].selfIndex;
-		}
-
-		return -1;
-	}
-
-	int Hierarchy::getNode(int index)
-	{
-		return -1;
-	}
-
-	void Hierarchy::addNode(HierarchyNode node)
-	{
-		nodeList.push_back(node);
-	}
+void Hierarchy::addNode(HierarchyNode node)
+{
+	nodeList.push_back(node);
+}

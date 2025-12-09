@@ -129,9 +129,9 @@ namespace ew {
 	{
 		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(m));
 	}
-	void Shader::SetMat4Arr(const std::string& name, const glm::mat4 (&m)[55]) const
+	void Shader::SetMat4Arr(const std::string& name, const glm::mat4 (&m)[71]) const
 	{
-		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 55, GL_FALSE, glm::value_ptr(m[0]));
+		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 71, GL_FALSE, glm::value_ptr(m[0]));
 	}
 }
 

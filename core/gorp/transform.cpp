@@ -74,6 +74,7 @@ NodeTransformsList::NodeTransformsList()
 	
 }
 
+//get transfromMat given t
 void calcTransformMat(Transform &t)
 {
 	glm::mat4 Rx = glm::mat4(0), Ry = glm::mat4(0), Rz = glm::mat4(0), R = glm::mat4(0);

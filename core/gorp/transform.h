@@ -46,22 +46,3 @@ public:
 
 void calcTransformMat(Transform &t);
 
-//static void FKSingle(std::vector<NodeTransform>& t, std::vector<HierarchyNode>& nodes, int index)
-//{
-//	int parent = nodes[index].parentIndex;
-//	t[index].global.transformMat = t[parent].global.transformMat * t[index].local.transformMat;
-//}
-//static void FKSolver(std::vector<NodeTransform>& t, std::vector<HierarchyNode> nodes)
-//{
-//	for (int i = 0; i < t.size(); i++)
-//	{
-//		int parent = nodes[i].parentIndex;
-//		if (parent == -1)
-//		{
-//			t[i].global.transformMat = t[i].local.transformMat;
-//			continue;
-//		}
-//
-//		t[i].global.transformMat = t[parent].global.transformMat * t[i].local.transformMat;
-//	}
-//}

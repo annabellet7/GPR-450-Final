@@ -9,7 +9,6 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 		return;
 	}
 
-
 	fileSectionHTR currentSection = htr_file;
 	int animationIndex;
 	std::string currentBone;
@@ -136,10 +135,10 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				transform.local.rotate = glm::vec4(Rx, Ry, Rz, 0);
 				transform.local.scale = glm::vec4(1.0);
 
+				//each transform holds its node index and keyframe index
 				switch (animationTracker)
 				{
 				case 0:
-					//out_hierarchy->nodePoseList->transformsList.push_back(transform);
 					out_hierarchy->nodePoseList->transformsList.push_back(transform);
 					
 					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].nodeIndex = nodeIndex;
@@ -160,7 +159,6 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 					break;
 				case 1:
 					out_hierarchy->nodePoseList->transformsList.push_back(transform);
-					//out_hierarchy->nodePoseList[totalKeyframeCounter].transformsList.push_back(transform);
 
 					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].nodeIndex = nodeIndex;
 					out_hierarchy->nodePoseList->transformsList[totalKeyframeCounter].keyframeIndex = index - 1;
@@ -180,8 +178,6 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 					break;
 				case 2:
 					out_hierarchy->nodePoseList->transformsList.push_back(transform);
-					//out_hierarchy->nodePoseList[totalKeyframeCounter].transformsList.push_back(transform);
-
 					out_hierarchy->nodePoseList->basePose[totalKeyframeCounter].nodeIndex = nodeIndex;
 					out_hierarchy->nodePoseList->basePose[totalKeyframeCounter].keyframeIndex = index - 1;
 
@@ -191,9 +187,6 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 					}
 					break;
 				}
-
-				//out_hierarchy->animList[animationIndex].tNode[currentBone][index].local = transform;
-				//out_hierarchy->local.push_back(transform);
 				break;
 			}
 			case htr_hierarchy:
@@ -207,20 +200,12 @@ void TestHTRLoader(HierarchyList* out_hierarchy, HeaderData* headerData, const s
 				if (buffer[1] == "GLOBAL")
 				{
 					currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size();
-					currentNode.parentIndex = out_hierarchy->hierarchy->getNode(buffer[1]);
-					out_hierarchy->hierarchy->addNode(currentNode);
-					break;
-				}
-
-				if (buffer[1] == "crayfoish")
-				{
-					currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size() - 1;
 					currentNode.parentIndex = -1;
 					out_hierarchy->hierarchy->addNode(currentNode);
 					break;
 				}
 
-				currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size() - 1;
+				currentNode.selfIndex = out_hierarchy->hierarchy->nodeList.size();
 				currentNode.parentIndex = out_hierarchy->hierarchy->getNode(buffer[1]);
 				out_hierarchy->hierarchy->addNode(currentNode);
 

@@ -3,14 +3,12 @@
 #include "hierarchyNode.h"
 #include <string>
 
-	class Hierarchy
-	{
-	public:
-		std::vector<HierarchyNode> nodeList;
-	
-		int getNode(std::string name);
-		int getNode(int index);
-		void addNode(HierarchyNode node);
+//data structure for holding the relationship between the nodes
+class Hierarchy
+{
+public:
+	std::vector<HierarchyNode> nodeList;
 
-		Hierarchy();
-	};
+	int getNode(std::string name);
+	void addNode(HierarchyNode node);
+};

@@ -16,6 +16,7 @@
 #include <ew/cameraController.h>
 #include <ew/texture.h>
 
+#include "gorp/hierarchyList.h"
 #include "gorp/hierarchyNode.h"
 #include "gorp/transform.h"
 #include "gorp/htrLoader.h"
@@ -57,9 +58,6 @@ int main() {
 
 	ew::Shader shader = ew::Shader("assets/weightPaint.vert", "assets/weightPaint.frag");
 	ew::Shader anim = ew::Shader("assets/lit.vert", "assets/lit.frag");
-	//ew::Shader boneTest = ew::Shader("assets/boneTest.vert", "assets/boneTest.frag");
-	//ew::Model monkeyModel = ew::Model("assets/Suzanne.obj");
-	//Transform monkeyTransform;
 
 	ew::Model crayfoish = ew::Model("assets/crayfoish_mesh_rig.fbx");
 	NodeTransform t;
@@ -76,7 +74,7 @@ int main() {
 	camera.aspectRatio = (float)screenWidth / screenHeight;
 	camera.fov = 60.0f;
 
-	//Node test;
+	//init
 	HierarchyList* list = new HierarchyList;
 	HeaderData* data = new HeaderData;
 	TestHTRLoader(list, data, "assets/crayfoish_animations.txt");
@@ -93,46 +91,8 @@ int main() {
 	clipNames.push_back("clipAnim2");
 	clipNames.push_back("clipAnim3");
 	float keyframeDuration = 0.0333333333333; // 1/framerate
-
-	//need to initalize clip controller to keep track of the keyframe and where we are in it
-	//once we do that we can use the keyframe were in to find the two poses to interpolate using where in the keyfame we are
-	//to do this we would need a pose lerp
-	//after we would solve fk on the current pose and that should give us a skeleton with animation
-	//skinning needs to happen somewhere in here
-
 	clipCtrlInit(ctrl, "anim1", clipNames, keyframeDuration, Animation::anim1keyframecount, 1);
 	
-
-
-	//fk stuff
-	//nodeTransforms headTransform;
-	//headTransform.local.translate = glm::vec4(0, 0, 0, 1);
-	//headTransform.local.rotate = glm::vec4(0, 90, 0, 0);
-	//headTransform.local.scale = glm::vec4(1, 1, 1, 1);
-
-	//nodeTransforms childTransform;
-	//childTransform.local.translate = glm::vec4(1, 0, 0, 1);
-	//childTransform.local.rotate = glm::vec4(0, 0, 0, 0);
-	//childTransform.local.scale = glm::vec4(1, 1, 1, 1);
-
-	/*HierarchyNode root;
-	root.name = "rootNode";
-	root.selfIndex = 0;
-	root.parentIndex = -1;
-
-	HierarchyNode leaf;
-	leaf.name = "rootNode";
-	leaf.selfIndex = 1;
-	leaf.parentIndex = 0;
-
-	std::vector<HierarchyNode> hierarchy;
-	std::vector<nodeTransforms> transformList;
-
-	hierarchy.push_back(root);
-	hierarchy.push_back(leaf);
-
-	transformList.push_back(headTransform);
-	transformList.push_back(childTransform);*/
 	bool pressingSpace = false;
 
 	while (!glfwWindowShouldClose(window)) {
@@ -148,30 +108,29 @@ int main() {
 		glClearColor(0.6f, 0.8f, 0.92f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+		//pose update
 		clipControllerUpdate(ctrl, deltaTime);
 		poseLerp(list, ctrl->keyframeIndex, ctrl->keyframeIndex + 1, data->boneCount, ctrl->keyframeParam);
-		poseConcat(list);
+		//poseConcat(list);
 		poseCovert(list);
 		solveFK(list);
+		for (int i = 0; i < list->hierarchy->nodeList.size(); i++)
+		{
+			calcTransformMat(list->nodePoseList->currentPose[i].local);
+		}
 		updateLocalInverse(list);
 		updateGlobalInverse(list);
 		updateObjectBindToCurrent(list);
-		//first node and last 14 nodes are trash
-		glm::mat4 notTrash[55];
-		int k = 1;
-
-		for (int i = 0; i < 55; i++)
+		
+		glm::mat4 cpy[71];
+		for (int i = 0; i < list->nodePoseList->objectSpaceBindToCurrent.size(); i++)
 		{
-			notTrash[i] = list->nodePoseList->objectSpaceBindToCurrent[i+1].global.transformMat;
-			//list->nodePoseList->
-			notTrash[i][3][3] = 1.0f;
+			cpy[i] = list->nodePoseList->objectSpaceBindToCurrent[i].global.transformMat;
+			cpy[i][3][3] = 1.0f;
 		}
 
-		//shader.setMat4("uModel", t.local.transformMat);
-		//shader.SetMat4Arr("gBones", notTrash);
+		//weight paint
 		/*shader.use();
-
 		glBindTextureUnit(0, brickTex);
 		shader.setVec3("uEyePos", camera.position);
 		shader.setFloat("uMaterial.Ka", material.Ka);
@@ -180,15 +139,13 @@ int main() {
 		shader.setFloat("uMaterial.Shininess", material.Shininess);
 		shader.setInt("gDisplayBoneIndex", boneCounter);
 		shader.setMat4("uModel", t.local.transformMat);
-		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());*/
+		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
+		crayfoish.draw();*/
 
+		//animation
 		anim.use();
 		glBindTextureUnit(0, crayfoishTex);
-		anim.SetMat4Arr("gBones", notTrash);
-		/*for (int i = 0; i < 55; i++)
-		{
-			anim.setMat4("gBones", notTrash[i]);
-		}*/
+		anim.SetMat4Arr("gBones", cpy);
 		anim.setVec3("uEyePos", camera.position);
 		anim.setFloat("uMaterial.Ka", material.Ka);
 		anim.setFloat("uMaterial.Kd", material.Kd);
@@ -197,27 +154,6 @@ int main() {
 		anim.setMat4("uModel", t.local.transformMat);
 		anim.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
 		crayfoish.draw();
-
-		//calcTransformMat(&headTransform.global);
-		//headTransform.global.transformMat = glm::translate(headTransform.global.transformMat, headTransform.global.translate);
-		//monkeyTransform.rotation = glm::rotate(monkeyTransform.rotation, deltaTime, glm::vec3(0.0f, 1.0f, 0.0f));
-		/*calcTransformMat(&headTransform.local);
-		shader.setMat4("uModel", headTransform.local.transformMat);
-		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
-
-		monkeyModel.draw();
-
-		FKSolver(transformList, hierarchy);
-
-		calcTransformMat(&childTransform.local);
-		shader.setMat4("uModel", childTransform.local.transformMat);
-		shader.setMat4("uViewProjection", camera.projectionMatrix() * camera.viewMatrix());
-
-		monkeyModel.draw();*/
-
-		//headTransform.local.rotate = headTransform.local.rotate + glm::vec4(0, 1, 0, 0);
-		//calcTransformMat(&headTransform.local);
-		
 		
 
 		cameraController.move(window, &camera, deltaTime);
